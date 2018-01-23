@@ -10,11 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180123184929) do
+ActiveRecord::Schema.define(version: 20180123213307) do
 
   create_table "clues", force: :cascade do |t|
     t.integer "neighborhood_id"
     t.string  "text"
+  end
+
+  create_table "evidences", force: :cascade do |t|
+    t.integer "game_id"
+    t.string  "suspect_name"
+    t.string  "gender"
+    t.string  "hair_color"
+    t.string  "eye_color"
+    t.string  "vehicle"
+    t.string  "favorite_food"
   end
 
   create_table "game_store_clues", force: :cascade do |t|
@@ -29,6 +39,10 @@ ActiveRecord::Schema.define(version: 20180123184929) do
     t.integer "suspect_id"
   end
 
+  create_table "neighborhoods", force: :cascade do |t|
+    t.string "name"
+  end
+
   create_table "players", force: :cascade do |t|
     t.string "name"
     t.string "rank"
@@ -38,6 +52,15 @@ ActiveRecord::Schema.define(version: 20180123184929) do
     t.integer "neighborhood_id"
     t.string  "name"
     t.string  "witness"
+  end
+
+  create_table "suspects", force: :cascade do |t|
+    t.string "name"
+    t.string "gender"
+    t.string "hair_color"
+    t.string "eye_color"
+    t.string "vehicle"
+    t.string "favorite_food"
   end
 
 end

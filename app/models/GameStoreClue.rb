@@ -1,5 +1,5 @@
 class GameStoreClue < ActiveRecord::Base
-  has_many :stores
-  has_many :clues
+  belongs_to :store
+  belongs_to :clue
   belongs_to :game
 end
