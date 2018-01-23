@@ -1,0 +1,6 @@
+class Event < ActiveRecord::Base
+  belongs_to :venue
+  belongs_to :attraction
+  # belongs_to :segment, through: :attraction
+  # belongs_to :genre, through: :attraction
+end
