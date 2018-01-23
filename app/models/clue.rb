@@ -1,4 +1,4 @@
 class Clue < ActiveRecord::Base
   belongs_to :neighborhood
-  belongs_to :gamestoreclue
+  has_many :gamestoreclue
 end
