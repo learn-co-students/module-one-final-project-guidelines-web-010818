@@ -53,47 +53,47 @@ def search(term, location="new york")
   response.parse
 end
 
-puts "Search a Restaurant: "
-term = gets.chomp
-puts "Specify a location: "
-location = gets.chomp
+# puts "Search a Restaurant: "
+# term = gets.chomp
+# puts "Specify a location: "
+# location = gets.chomp
 
-result = search(term,location)
-if result["error"]
-  puts result["error"]["description"]
-else
-  restaurants = result["businesses"].each do |restaurant|
-    puts "Name: " + restaurant["name"]
-    puts "Address: " + restaurant["location"]["display_address"].join(", ")
-    puts "Number of Reviews: #{restaurant["review_count"]}"
-    puts "Average Rating: #{restaurant["rating"]}"
-    puts "\n"
-  end
-end
-
-
-business_id = "yelp-san-francisco"
-def business(business_id)
-  url = "#{API_HOST}#{BUSINESS_PATH}#{business_id}"
-
-  response = HTTP.auth("Bearer #{API_KEY}").get(url)
-  response.parse
-end
-
-def business_reviews(business_id)
-  url = "#{API_HOST}#{BUSINESS_PATH}#{business_id}/reviews"
-
-  response = HTTP.auth("Bearer #{API_KEY}").get(url)
-  response.parse
-end
-
-reviews = business_reviews(business_id)["reviews"]
-reviews.each do |review|
-  puts review["text"]
-  puts review["user"]["name"]
-  puts "\n"
-end
-
-binding.pry
-
-puts reviews
+# result = search(term,location)
+# if result["error"]
+#   puts result["error"]["description"]
+# else
+#   restaurants = result["businesses"].each do |restaurant|
+#     puts "Name: " + restaurant["name"]
+#     puts "Address: " + restaurant["location"]["display_address"].join(", ")
+#     puts "Number of Reviews: #{restaurant["review_count"]}"
+#     puts "Average Rating: #{restaurant["rating"]}"
+#     puts "\n"
+#   end
+# end
+#
+#
+# business_id = "yelp-san-francisco"
+# def business(business_id)
+#   url = "#{API_HOST}#{BUSINESS_PATH}#{business_id}"
+#
+#   response = HTTP.auth("Bearer #{API_KEY}").get(url)
+#   response.parse
+# end
+#
+# def business_reviews(business_id)
+#   url = "#{API_HOST}#{BUSINESS_PATH}#{business_id}/reviews"
+#
+#   response = HTTP.auth("Bearer #{API_KEY}").get(url)
+#   response.parse
+# end
+#
+# reviews = business_reviews(business_id)["reviews"]
+# reviews.each do |review|
+#   puts review["text"]
+#   puts review["user"]["name"]
+#   puts "\n"
+# end
+#
+# binding.pry
+#
+# puts reviews
