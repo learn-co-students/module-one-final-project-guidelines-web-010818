@@ -57,4 +57,9 @@ class ApiCommunicator
     self.iterate_through_pages(url, "events")
   end
 
+  def self.get_venue_by_id(venue_id)
+    url = "#{ROUTE}venues.json?id=#{venue_id}#{API_KEY}"
+    self.iterate_through_pages(url, "venues")
+  end
+
 end

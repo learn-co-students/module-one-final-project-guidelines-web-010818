@@ -91,13 +91,32 @@ class Cli
   end
 
   def find_or_create_event(event_result_hash)
-  new_event = Event.find_or_create_by(id:event_result_hash["id"]) do |event|
-    event.name = event_result_hash['name']
-    event.venue_id = event_result_hash['_embedded']['venues'][0]['id']
-    event.attraction_id = event_result_hash['_embedded']['attractions'][0]['id']
-    event.dateTime = event_result_hash['dates']['start']['dateTime']
+    new_event = Event.find_or_create_by(id:event_result_hash["id"]) do |event|
+      event.name = event_result_hash['name']
+      event.venue_id = event_result_hash['_embedded']['venues'][0]['id']
+      event.attraction_id = event_result_hash['_embedded']['attractions'][0]['id']
+      event.dateTime = event_result_hash['dates']['start']['dateTime']
+    end
+    new_event
   end
-  new_event
+
+  def find_or_create_attraction(attraction_result_hash)
+    new_attraction = Attraction.find_or_create_by(id:attraction_result_hash["id"]) do |attraction|
+      attraction.name = attraction_result_hash['name']
+      classifications_info = attraction_result_hash['classifications'][0]
+      attraction.segment_id = classifications_info['segment']['id']
+      attraction.genre_id = classifications_info['genre']['id']
+    end
+    new_attraction
+  end
+
+  def find_or_create_venue(venue_result_hash)
+    new_venue = Venue.find_or_create_by(id:venue_result_hash['id']) do |venue|
+      venue.name = venue_result_hash['name']
+      venue.city = venue_result_hash['city']['name']
+      venue.state_code = venue_result_hash['state']['stateCode']
+    end
+    new_venue
   end
 
   def choose_by_number(results,type) # takes hash of results and data type (attraction, event, etc)
@@ -117,16 +136,66 @@ class Cli
     keyword = self.get_input_from_user("Enter a keyword to search for.")
     parsed_results = ApiCommunicator.get_attractions_by_keyword(keyword)
     selected_attraction = choose_by_number(parsed_results,"attraction")
+    find_or_create_attraction(selected_attraction) #adds selected attraction to db
     attraction_id = selected_attraction["id"]
   end
 
   def find_events_for_attraction
     attraction_id = get_attraction_by_keyword
     events = ApiCommunicator.get_events_by_attraction_id(attraction_id)
+    newly_added = []
     events.each do |e|
       new_event = self.find_or_create_event(e)
+      newly_added << new_event.id
     end
-    puts "#{events.size} results"
+    state_code = filter_events_by_location(newly_added)
+    venues_in_state = Venue.select do |venue|
+      venue.state_code == state_code
+    end
+    binding.pry
+    venue_ids = venues_in_state.map do |venue|
+      venue.id
+    end
+    found_events = Event.select do |event|
+      event.attraction_id == attraction_id && venue_ids.include?(event.venue_id)
+    end
+    found_events.map do |event|
+      name = event.name
+      venue = Venue.find_by(id:event.venue_id)
+      date = event.dateTime
+      puts "#{name} - #{venue.name} - #{date}"
+    end
+  end
+
+
+
+  def filter_events_by_location(event_id_array) #through venue
+    location_tracker = []
+    event_id_array.each do |event_id|
+      event = Event.find_by(id:event_id)
+      event_venue = ApiCommunicator.get_venue_by_id(event.venue_id)
+      if event_venue && event_venue[0]["country"]['countryCode'] == "US"
+        new_venue = find_or_create_venue(event_venue[0])
+        location_tracker << new_venue.state_code
+      end
+    end
+    i = 1
+    location_tracker.uniq!
+    location_tracker.map do |state|
+      puts "#{i}. #{state}"
+      i += 1
+    end
+    number = get_input_from_user("Choose a number")
+    # gets choice
+    chosen_state = location_tracker[number.to_i - 1]
+    chosen_state #return state code
+  end
+
+  def filter_event_results(event_results)
+    if event_results.size > 20
+      # filter by date
+      # filter by location
+    end
   end
 
 
@@ -142,9 +211,10 @@ class Cli
   end
   #Katy
 
-  def filter_by_date
+  def filter_events_by_date
     #filter results by date
   end
+
 
 
 end
