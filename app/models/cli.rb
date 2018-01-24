@@ -54,12 +54,19 @@ class Cli
         venue.city = v['city']['name']
         venue.state_code = v['state']['stateCode']
       end
-      puts "-#{v['name']}"
     end
+    chosen_venue = choose_by_number(hash,"venue")
+
   end
 
   def get_events_from_venue
-    # one user chooses venue, get list of upcoming events
+    venue = find_venues_by_city
+    venue_id = venue['id']
+    found_events = ApiCommunicator.get_events_by_venue_id(venue_id)
+
+    found_events.each do |event|
+      find_or_create_event(event)
+    end
   end
 
   def put_segment_options
@@ -152,7 +159,6 @@ class Cli
     venues_in_state = Venue.select do |venue|
       venue.state_code == state_code
     end
-    binding.pry
     venue_ids = venues_in_state.map do |venue|
       venue.id
     end
