@@ -8,14 +8,15 @@ class Cli
   def run
     welcome
     ask_location
+    display_menu_options
   end
 
   def welcome
     puts "Welcome to the MealPal Rating App"
-    new_or_existing_user
+    create_user_or_login
   end
 
-  def new_or_existing_user
+  def create_user_or_login
     puts " 1. New User \n 2. Returning User"
     input = gets.chomp.to_i
     case input
@@ -68,10 +69,24 @@ class Cli
         puts "Incorrect input."
         ask_location
       end
-
     end
+  end
 
+  def display_menu_options
+    puts "1. View Your Past Meals"
+    puts "2. Enter a New Review"
+    puts "3. Search Restaurants"
+    puts "4. View All Reviews"
+    puts "5. Change User"
+    puts "6. Exit"
+    input = gets.chomp.to_i
 
+    case input
+    when 1
+      self.current_user.print_user_reviews
+    when 2
+      
+    end
   end
 
 

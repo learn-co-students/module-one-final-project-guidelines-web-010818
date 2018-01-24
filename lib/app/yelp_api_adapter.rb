@@ -40,7 +40,7 @@ class YelpApiAdapter
     response.parse
   end
 
-  def self.parse_search(restaurant_hash)
+  def self.parse_hash(restaurant_hash)
     parsed_hash = {}
     restaurant_hash.each do |k,v|
       # binding.pry
@@ -73,11 +73,27 @@ class YelpApiAdapter
   def self.search_and_parse(term, location="new york")
     restaurant_array = self.search(term, location)
     parsed_array = restaurant_array.map do |restaurant|
-      binding.pry
+      # binding.pry
       parse_hash(restaurant)
     end
     parsed_array
+    # binding.pry
+  end
+
+  def self.create_restaurant_instance_array(parsed_array)
     binding.pry
+    restaurant_instance_array = []
+    parsed_array.each do |restaurant|
+      restaurant_instance_array << Restaurant.new(restaurant)
+    end
+    restaurant_instance_array
+  end
+
+  def self.display_search_options(instance_array)
+    instance_array.each_with_index do |restaurant, index|
+      print "#{index + 1}. "
+      restaurant.display_restaurant_info
+    end
   end
 
 end

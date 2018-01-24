@@ -6,12 +6,18 @@ class Restaurant < ActiveRecord::Base
 
 
 
-  def display
-    puts "Name: #{self.name}"
-    puts "Address: #{self.address}"
-    puts "Phone Number: #{self.phone_number}"
-    puts "Yelp Rating: #{self.rating}"
-    puts "Yelp Review Count: #{self.yelp_review_count}"
+  def display_restaurant_info
+    puts " #{self.name}"
+    puts "\tAddress: #{self.address}"
+    puts "\tPhone Number: #{self.phone_number}"
+    puts "\tYelp Rating: #{self.yelp_rating}"
+    puts "\tYelp Review Count: #{self.yelp_review_count}"
+  end
+
+  def display_meals
+    self.meals.each_with_index do |meal, index|
+      puts "#{index + 1}. #{meal.name}"
+    end
   end
 
   def reviews
