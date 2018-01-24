@@ -16,4 +16,13 @@ class ApiCommunicator
     end
   end
 
+  def self.get_segments
+    url = "#{ROUTE}classifications.json?#{API_KEY}"
+    response = HTTParty.get(url)
+    json = JSON.parse("#{response}")
+    json["_embedded"]["classifications"].select do |segment_hash|
+      segment_hash["segment"]
+    end
+  end
+
 end

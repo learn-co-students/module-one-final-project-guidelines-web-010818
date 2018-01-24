@@ -11,7 +11,7 @@ class Cli
 
   def get_state_from_user
     puts "Enter a state code."
-    gets.chomp
+    gets.chomp.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")
   end
 
   def get_city_from_user
@@ -19,21 +19,59 @@ class Cli
     gets.chomp
   end
 
+
+
   def self.find_venues_by_city
     state = get_state_from_user
     city = get_city_from_user
     hash = ApiCommunicator.get_type_by_city("venues", state, city)
     hash.each do |v|
       new_venue = Venue.find_or_create_by(id:v['id']) do |venue|
-        venue.name =  v['name']
-        venue.city =  v['city']['name']
+        venue.name = v['name']
+        venue.city = v['city']['name']
         venue.state_code = v['state']['stateCode']
       end
       puts "-#{v['name']}"
     end
   end
 
+  def self.put_segment_options
+    hash = ApiCommunicator.get_segments
+    hash.each do |s|
+      Segment.find_or_create_by(id: s['segment']['id']) do |segment|
+        segment.name = s['segment']['name']
+      end
+      puts "-#{s['segment']['name']}"
+    end
+  end
 
+  def self.get_segment_from_user
+    puts "Enter a segment."
+    gets.chomp.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")
+  end
+
+  def self.put_genres_in_segment(segment)
+    hash = ApiCommunicator.get_segments.select do |s|
+      s['segment']['name'] == segment
+    end.first
+    hash['segment']["_embedded"]["genres"].each do |g|
+      Genre.find_or_create_by(id: g['id']) do |genre|
+        genre.name = g['name']
+      end
+      puts "-#{g['name']}"
+    end
+  end
+
+  def self.find_genres_for_segment
+    self.put_segment_options
+    segment = self.get_segment_from_user
+    self.put_genres_in_segment(segment)
+  end
+
+  def get_genre_from_user
+    puts "Enter a genre."
+    gets.chomp.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")
+  end
 
   def find_events_for_attraction
 
