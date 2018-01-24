@@ -40,7 +40,8 @@ class User < ActiveRecord::Base
   def add_review_for_existing_meal(meal:, restaurant:, rating:, content:)
     # restaurant already exists, meal already exists
     self.meals << meal
-    Review.find_and_update_review(self.id, meal.id, rating, content)
+    binding.pry
+    Review.find_and_update(user_id: self.id, meal_id: meal.id, rating: rating, content: content)
   end
 
 
@@ -49,7 +50,7 @@ class User < ActiveRecord::Base
     new_meal = Meal.create(name: meal_name)
     restaurant.meals <<  new_meal
     self.meals << new_meal
-    Review.find_and_update_review(self.id, new_meal.id, rating, content)
+    Review.find_and_update(user_id: self.id, meal_id: new_meal.id, rating: rating, content: content)
   end
 
 

@@ -37,7 +37,39 @@ class YelpApiAdapter
     url = "#{API_HOST}#{BUSINESS_PATH}#{business_id}/reviews"
 
     response = HTTP.auth("Bearer #{API_KEY}").get(url)
-    response.parse
+    response.parse["reviews"]
+  end
+
+  def self.parse_reviews(reviews_hash)
+    parsed_hash = {}
+    reviews_hash.each do |k, v|
+      # binding.pry
+      case k
+      when "text"
+        # binding.pry
+        parsed_hash[k] = v
+      when "rating"
+        parsed_hash[k] = v
+      when "user"
+        v.each do |user_info, value|
+          if user_info == "name"
+            parsed_hash["name"] = value
+          end
+        end
+      when "time_created"
+        parsed_hash[k] = DateTime.parse(v).to_date
+      end
+    end
+    parsed_hash
+  end
+
+  def self.get_reviews_and_parse(business_id)
+    reviews_array = self.business_reviews(business_id)
+    parsed_array = reviews_array.map do |review|
+      self.parse_reviews(review)
+    end
+    parsed_array
+
   end
 
   def self.parse_hash(restaurant_hash)

@@ -41,4 +41,27 @@ class Restaurant < ActiveRecord::Base
     self.find_by(yelp_rating: max_rating)
   end
 
+  def get_yelp_reviews
+    YelpApiAdapter.get_reviews_and_parse(self.yelp_id)
+  end
+
+  def display_yelp_reviews
+    yelp_reviews = self.get_yelp_reviews
+    yelp_reviews.each do |yelp_review|
+      puts "Name: #{yelp_review["name"]}"
+      puts "Rating: #{yelp_review["rating"]}"
+      puts "Date: #{yelp_review["date"]}"
+      puts "Text: #{yelp_review["text"]}"
+    end
+  end
+
+  def display_meal_pal_review
+    meal_pal_reviews = self.reviews
+    meal_pal_reviews.each do |meal_pal_review|
+      puts "Name: #{meal_pal_review.user.name}"
+      puts "Rating: #{meal_pal_review.rating}"
+      puts "Date: #{meal_pal_review.date}"
+      puts "Text: #{meal_pal_review.content}"
+    end
+  end
 end

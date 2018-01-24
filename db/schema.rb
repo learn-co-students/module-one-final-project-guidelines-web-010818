@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180123183519) do
+ActiveRecord::Schema.define(version: 20180124181406) do
 
   create_table "favorites", force: :cascade do |t|
     t.integer "user_id"
@@ -39,6 +39,7 @@ ActiveRecord::Schema.define(version: 20180123183519) do
     t.integer "meal_id"
     t.integer "rating"
     t.text "content"
+    t.date "date"
   end
 
   create_table "users", force: :cascade do |t|
