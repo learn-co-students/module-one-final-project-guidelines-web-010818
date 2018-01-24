@@ -4,4 +4,4 @@ require_relative '../config/environment'
 
 
 current_user = Cli.new
-current_user.get_events_from_venue
+current_user.find_events_for_attraction

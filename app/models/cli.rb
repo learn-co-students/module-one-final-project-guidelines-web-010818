@@ -82,17 +82,17 @@ class Cli
     hash.each do |v|
       find_or_create_venue(v)
     end
-    chosen_venue = choose_by_number(hash,"venue")
+    chosen_venue = choose_by_number(hash,"name")
   end
 
-  # def puts_events(event_rows)
-  #   events_from_db.each do |event_row|
-  #     name = event_row.name
-  #     venue = Venue.find_by(id:event_row.venue_id)
-  #     date = event_row.dateTime
-  #     puts "#{name} - #{venue.name} - #{date}"
-  #   end
-  # end
+  def puts_events(event_rows)
+    event_rows.each do |event_row|
+      name = event_row.name
+      venue = Venue.find_by(id:event_row.venue_id)
+      date = event_row.dateTime
+      puts "#{name} - #{venue.name} - #{date}"
+    end
+  end
 
   # def get_events_from_venue
   #   venue = find_venues_by_city
@@ -156,10 +156,15 @@ class Cli
 
 
 
-  def choose_by_number(results,type) # takes hash of results and data type (attraction, event, etc)
+  def choose_by_number(results,parameter) # takes hash of results and data type (attraction, event, etc)
     i = 1
-    results.each do |e| #iterates through results, prints with number
-      puts "#{i}. #{e["name"]}"
+
+    print_array = results.map do |e| #iterates through results, prints with number
+      e[parameter]
+    end
+
+    print_array.uniq.each do |e|
+      puts "#{i}. #{e}"
       i += 1
     end
     # gets number from user
@@ -172,7 +177,7 @@ class Cli
     #get attractions by keyword
     keyword = self.get_input_from_user("Enter a keyword to search for.")
     parsed_results = ApiCommunicator.get_attractions_by_keyword(keyword)
-    selected_attraction = choose_by_number(parsed_results,"attraction")
+    selected_attraction = choose_by_number(parsed_results,"name")
     find_or_create_attraction(selected_attraction) #adds selected attraction to db
     attraction_id = selected_attraction["id"]
   end
@@ -184,7 +189,8 @@ class Cli
   end
 
   def find_events_for_attraction
-    events = ApiCommunicator.get_events_by_attraction_id(get_attraction_id_by_keyword)
+    attraction_id = get_attraction_id_by_keyword
+    events = ApiCommunicator.get_events_by_attraction_id(attraction_id)
     newly_added = []
     events.each do |e|
       new_event = find_or_create_event(e)
@@ -210,19 +216,13 @@ class Cli
       event_venue = ApiCommunicator.get_venue_by_id(event.venue_id)
       if event_venue && event_venue[0]["country"]['countryCode'] == "US"
         new_venue = find_or_create_venue(event_venue[0])
-        location_tracker << new_venue.state_code
+        location_tracker << new_venue
       end
     end
-    i = 1
-    location_tracker.uniq!
-    location_tracker.map do |state|
-      puts "#{i}. #{state}"
-      i += 1
-    end
-    number = get_input_from_user("Choose a number")
-    # gets choice
-    chosen_state = location_tracker[number.to_i - 1]
-    chosen_state #return state code
+
+    chosen_state = choose_by_number(location_tracker,"state_code")
+
+    chosen_state["state_code"] #return state code
   end
 
   # def filter_event_results(event_results)
