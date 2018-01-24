@@ -12,6 +12,8 @@ class Restaurant < ActiveRecord::Base
     puts "\tPhone Number: #{self.phone_number}"
     puts "\tYelp Rating: #{self.yelp_rating}"
     puts "\tYelp Review Count: #{self.yelp_review_count}"
+    puts "\tMealPal Rating: #{self.mealpal_rating}"
+    puts "\tMealPal Review Count: #{self.reviews.size}"
   end
 
   def display_meals
@@ -72,7 +74,15 @@ class Restaurant < ActiveRecord::Base
     review_ratings.compact.inject{ |sum, el| sum + el }.to_f / review_ratings.compact.size
   end
 
-  def self.top_10_yelp_restaurants
-    self.all.order(yelp_rating: :desc).limit(10)
+  def self.top_10_yelp
+    restaurants_array = self.all.order(yelp_rating: :desc).limit(10)
+    restaurants_array.each_with_index do |restaurant, index|
+      print "#{index + 1}. "
+      restaurant.display_restaurant_info
+    end
+  end
+
+  def self.top_10_mealpal
+    self.all.order(mealpal_rating: :desc).limit(10)
   end
 end
