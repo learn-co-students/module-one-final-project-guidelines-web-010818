@@ -38,6 +38,37 @@ class Cli
 
   #### Helper methods
 
+  ### Create class instances
+
+  def find_or_create_event(event_result_hash)
+    new_event = Event.find_or_create_by(id:event_result_hash["id"]) do |event|
+      event.name = event_result_hash['name']
+      event.venue_id = event_result_hash['_embedded']['venues'][0]['id']
+      event.attraction_id = event_result_hash['_embedded']['attractions'][0]['id']
+      event.dateTime = event_result_hash['dates']['start']['dateTime']
+    end
+    new_event
+  end
+
+  def find_or_create_attraction(attraction_result_hash)
+    new_attraction = Attraction.find_or_create_by(id:attraction_result_hash["id"]) do |attraction|
+      attraction.name = attraction_result_hash['name']
+      classifications_info = attraction_result_hash['classifications'][0]
+      attraction.segment_id = classifications_info['segment']['id']
+      attraction.genre_id = classifications_info['genre']['id']
+    end
+    new_attraction
+  end
+
+  def find_or_create_venue(venue_result_hash)
+    new_venue = Venue.find_or_create_by(id:venue_result_hash['id']) do |venue|
+      venue.name = venue_result_hash['name']
+      venue.city = venue_result_hash['city']['name']
+      venue.state_code = venue_result_hash['state']['stateCode']
+    end
+    new_venue
+  end
+
 
   def get_input_from_user(string)
     puts string
@@ -124,37 +155,7 @@ class Cli
     self.put_genres_in_segment(segment)
   end
 
-  def find_or_create_event(event_result_hash)
-    new_event = Event.find_or_create_by(id:event_result_hash["id"]) do |event|
-      event.name = event_result_hash['name']
-      event.venue_id = event_result_hash['_embedded']['venues'][0]['id']
-      event.attraction_id = event_result_hash['_embedded']['attractions'][0]['id']
-      event.dateTime = event_result_hash['dates']['start']['dateTime']
-    end
-    new_event
 
-  end
-
-
-
-  def find_or_create_attraction(attraction_result_hash)
-    new_attraction = Attraction.find_or_create_by(id:attraction_result_hash["id"]) do |attraction|
-      attraction.name = attraction_result_hash['name']
-      classifications_info = attraction_result_hash['classifications'][0]
-      attraction.segment_id = classifications_info['segment']['id']
-      attraction.genre_id = classifications_info['genre']['id']
-    end
-    new_attraction
-  end
-
-  def find_or_create_venue(venue_result_hash)
-    new_venue = Venue.find_or_create_by(id:venue_result_hash['id']) do |venue|
-      venue.name = venue_result_hash['name']
-      venue.city = venue_result_hash['city']['name']
-      venue.state_code = venue_result_hash['state']['stateCode']
-    end
-    new_venue
-  end
 
   def choose_by_number(results,type) # takes hash of results and data type (attraction, event, etc)
     i = 1
@@ -246,10 +247,6 @@ class Cli
   #Matt
 
 
-
-  def filter_events_by_date
-    #filter results by date
-  end
 
 
 
