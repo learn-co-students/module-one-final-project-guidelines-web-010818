@@ -69,7 +69,7 @@ Suspect.find_or_create_by( name: "Killer Kyle",
   gender: "male",
   hair_color: "blond",
   eye_color: "blue",
-  vehicle: "convertible"
+  vehicle: "convertible",
   favorite_food: "Italian" )
 Suspect.find_or_create_by( name: "Dastardly David",
   gender: "male",
