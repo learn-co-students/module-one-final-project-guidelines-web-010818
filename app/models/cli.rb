@@ -76,28 +76,53 @@ class Cli
     hash = ApiCommunicator.get_segments.select do |s|
       s['segment']['name'] == segment
     end.first
+    i = 1
     hash['segment']["_embedded"]["genres"].each do |g|
       Genre.find_or_create_by(id: g['id']) do |genre|
         genre.name = g['name']
       end
-      puts "-#{g['name']}"
+      puts "#{i}. #{g['name']}"
+      i += 1
+    end
+
+    response = self.get_input_from_user("Please select one of the above by number.")
+
+    index = response.to_i - 1
+    selected_genre = hash['segment']["_embedded"]["genres"][index]
+    genre_id = selected_genre["id"]
+    attractions = ApiCommunicator.get_attractions_by_genre_id(genre_id)
+
+    attractions.each do |a|
+      new_attraction = self.find_or_create_attraction(a)
+      puts new_attraction.name
     end
   end
 
   def find_genres_for_segment
+    puts "These are the available segments:"
+    #segments to more "normal" term?
     self.put_segment_options
     segment = self.get_input_from_user("Enter a segment.")
     self.put_genres_in_segment(segment)
   end
 
   def find_or_create_event(event_result_hash)
-  new_event = Event.find_or_create_by(id:event_result_hash["id"]) do |event|
-    event.name = event_result_hash['name']
-    event.venue_id = event_result_hash['_embedded']['venues'][0]['id']
-    event.attraction_id = event_result_hash['_embedded']['attractions'][0]['id']
-    event.dateTime = event_result_hash['dates']['start']['dateTime']
+    new_event = Event.find_or_create_by(id:event_result_hash["id"]) do |event|
+      event.name = event_result_hash['name']
+      event.venue_id = event_result_hash['_embedded']['venues'][0]['id']
+      event.attraction_id = event_result_hash['_embedded']['attractions'][0]['id']
+      event.dateTime = event_result_hash['dates']['start']['dateTime']
+    end
+    new_event
   end
-  new_event
+
+  def find_or_create_attraction(attraction_result_hash)
+    new_attraction = Attraction.find_or_create_by(id:attraction_result_hash["id"]) do |attraction|
+      attraction.name = attraction_result_hash['name']
+      attraction.segment_id = attraction_result_hash['classifications'][0]['segment']['id']
+      attraction.genre_id = attraction_result_hash['classifications'][0]['genre']['id']
+    end
+    new_attraction
   end
 
 
@@ -130,6 +155,11 @@ class Cli
 
   def find_attractions_for_genre
     # gets segment then genre from user, returns like of attractions
+    find_genres_for_segment
+    response = get_input_from_user("")
+    #built genre retrieval in #puts genres by segment
+
+
   end
   #Matt
 

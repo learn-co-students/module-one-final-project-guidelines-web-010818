@@ -16,7 +16,7 @@ class ApiCommunicator
     total_pages = json["page"]["totalPages"]
     current_page = 0
     results_array = []
-    while current_page < total_pages
+    while current_page < total_pages && current_page < 50
       page_url = "#{url}&page=#{current_page}"
       page_results = self.get_and_parse(page_url)
       results_array << page_results[type]
@@ -55,6 +55,14 @@ class ApiCommunicator
     url = "#{ROUTE}events.json?attractionId=#{attraction_id}#{API_KEY}"
     #add check to see if there are any results
     self.iterate_through_pages(url, "events")
+  end
+
+  def self.get_attractions_by_genre_id(genre_id)
+    url = "#{ROUTE}attractions.json?classificationId=#{genre_id}#{API_KEY}"
+    results_array = self.iterate_through_pages(url,"attractions")
+    results_array.select do |a|
+      a['upcomingEvents']['_total'] > 0
+    end
   end
 
 end
