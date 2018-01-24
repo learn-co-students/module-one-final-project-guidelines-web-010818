@@ -100,31 +100,33 @@ class Cli
   new_event
   end
 
+  def choose_by_number(results,type) # takes hash of results and data type (attraction, event, etc)
+    i = 1
+    results.each do |e| #iterates through results, prints with number
+      puts "#{i}. #{e["name"]}"
+      i += 1
+    end
+    # gets number from user
+    response = self.get_input_from_user("Please select one of the above by number.")
+    index = response.to_i - 1 # get item index from selected number
+    selected = results[index] #return hash for selected data
+  end
 
-
-  def find_events_for_attraction
+  def get_attraction_by_keyword
     #get attractions by keyword
     keyword = self.get_input_from_user("Enter a keyword to search for.")
     parsed_results = ApiCommunicator.get_attractions_by_keyword(keyword)
-
-    i = 1
-
-    parsed_results.each do |attraction|
-      puts "#{i}. #{attraction["name"]}"
-      i += 1
-    end
-
-    response = self.get_input_from_user("Please select one of the above by number.")
-
-    index = response.to_i - 1
-    selected_attraction = parsed_results[index]
+    selected_attraction = choose_by_number(parsed_results,"attraction")
     attraction_id = selected_attraction["id"]
-    events = ApiCommunicator.get_events_by_attraction_id(attraction_id)
+  end
 
+  def find_events_for_attraction
+    attraction_id = get_attraction_by_keyword
+    events = ApiCommunicator.get_events_by_attraction_id(attraction_id)
     events.each do |e|
       new_event = self.find_or_create_event(e)
-      puts new_event.name
     end
+    puts "#{events.size} results"
   end
 
 
