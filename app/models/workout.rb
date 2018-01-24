@@ -1,48 +1,59 @@
 class Workout < ActiveRecord::Base
 
-
-  def self.display_muscle_groups
+  def self.put_muscle_groups
     puts "What muscle would you like to stretch?"
-    MuscleGroup.all.each do |muscle_group_instance|
-      puts "#{muscle_group_instance.id}. #{muscle_group_instance.name}"
-    end
+    MuscleGroup.display_mg
   end
 
   def self.display_relevant_stretches
-    user_input = gets.chomp
-    relevant_stretch_mg = StretchMuscleGroup.where(muscle_group_id: 1)  #place holder ????
-
-    puts "Choose a stretch:"
-    relevant_stretch_mg.each do |smg|
-      id = smg.stretch_id
-      stretch = Stretch.find(id)
-      puts "#{stretch.id}. #{stretch.name}"
-    end
+    user_mg_id = gets.chomp.to_i
+    #find stretch_id for userinput
+    #puts "#{stretch.id}. #{stretch.name}"
   end
 
   def self.compile_workout
-    user_input = gets.chomp.to_i
-    chosen_stretch = Stretch.all.find do |stretch_instance|
-      stretch_instance.id == user_input
-    end
-    @workout << chosen_stretch
+    user_stretch_id = gets.chomp.to_i
+    add_to_workout(user_stretch_id)
+
   end
 
+  def self.start_workout
+    puts "Starting workout in..."
+    sleep 1
+    puts "3..."
+    sleep 2
+    puts "2..."
+    sleep 2
+    puts "1..."
+    sleep 1
+    puts "go!"
+    @workout.each do |stretch_instance|
+      puts stretch_instance.name
+      #insert picture / link to video
+      puts stretch_instance.instructions
+      sleep 10
+    end
+  end
 
-
-
+  def self.choose_favorite
+    puts "Choose your favorite stretch"
+    @workout.each do |stretch_instance|
+      puts "#{stretch_instance.id}. #{stretch_instance.name}"
+    end
+    user_input = gets.chomp.to_i
+    binding.pry
+    Favorite.create(user_id: self.id, stretch_id: user_input)
+  end
 
   def self.run
-    #this needs to loop
-    @workout = []
-    while @workout.length < 2
+    while @workout.length < 2       #change back to five
       display_muscle_groups
       display_relevant_stretches
       compile_workout
     end
-    puts "end "
+    start_workout
+    choose_favorite
   end
-
 
 end
 

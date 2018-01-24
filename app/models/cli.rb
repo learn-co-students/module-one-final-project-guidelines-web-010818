@@ -1,10 +1,6 @@
 class Cli < ActiveRecord::Base
 
-  attr_accessor :current_user
-
-  def initialize
-     @current_user = nil
-  end
+  @@current_user = nil
 
   def self.greet_user
     #create welcome screen
@@ -17,7 +13,7 @@ class Cli < ActiveRecord::Base
   end
 
   def self.find_or_create_user
-    @current_user =  User.find_or_create_by(name: username)
+    @@current_user =  User.find_or_create_by(name: username)
   end
   #how to make this stop outputing SQL stuff
 
