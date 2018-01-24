@@ -13,15 +13,11 @@ class MuscleGroup < ActiveRecord::Base
     end
   end
 
-  def stretch_mg_relationships
-    StretchMuscleGroup.where("muscle_group_id = ?", self.id)
-  end
 
-  def stretches
-    stretch_mg_relationships.map do |relationship|
-      Stretch.where("id = ?", relationship.stretch_id)
-    end
-  end
+
+
+
+
 
 
 end

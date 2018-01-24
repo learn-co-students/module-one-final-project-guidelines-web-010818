@@ -7,35 +7,40 @@ class Stretch < ActiveRecord::Base
 
   #mg = muscle_group
 
-  # def stretch_instances_of_mg
-  #   StretchMuscleGroup.where("stretch_id = ?", self.id)
-  # end
+  def mg_id_to_stretch_id
 
-
-
-  def stretch_mg_relationships
-    StretchMuscleGroup.where("stretch_id = ?", self.id)
+  relevant_stretches = find_stretches_by_mg_id(user_mg_id)
+  relevant_stretches.each do |stretch|
+    puts "#{stretch.id}. #{stretch.name}"
   end
 
-  def muscle_groups
-    stretch_mg_relationships.map do |relationship|
-      MuscleGroup.where("id = ?", relationship.muscle_group_id)
+
+
+  def self.find_stretches_by_mg_id(user_mg_id)
+    relationships = StretchMuscleGroup.where("muscle_group_id = ?", user_mg_id)
+    relationships.map do |relationship|
+      self.where("id = ?", relationship.stretch_id)
+    end
+  end
+
+  def display_relevant_stretches(user_mg_id)
+    relevant_stretches = self.find_stretches_by_mg_id(user_mg_id)
+    relevant_stretches.each do |stretch|
+      stretch.disply_id_and_name
     end
   end
 
 
-  # def self.find_stretches_by_mg(user_input)
-  #   stretches = []
-  #   relevant_stretch_mg = StretchMuscleGroup.where("muscle_group_id = ?", user_input)
-  #   releavant_stretch_mg.each do |stretch_mg|
-  #     stretches << Stretch.where("id = ?", stretch_mg.stretch_id)
-  #   end
-  #   stretches
-  #
-  # end
-
-
-
+####use for education component later
+#   def stretch_mg_relationships
+#     StretchMuscleGroup.where("stretch_id = ?", self.id)
+#   end
+#
+#   def muscle_groups
+#     stretch_mg_relationships.map do |relationship|
+#       MuscleGroup.where("id = ?", relationship.muscle_group_id)
+#     end
+#   end
 
 end
 

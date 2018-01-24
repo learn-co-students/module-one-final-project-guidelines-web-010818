@@ -1,4 +1,4 @@
-class Workout < ActiveRecord::Base
+class WorkoutCLI < ActiveRecord::Base
 
   def self.put_muscle_groups
     puts "What muscle would you like to stretch?"
@@ -7,14 +7,12 @@ class Workout < ActiveRecord::Base
 
   def self.display_relevant_stretches
     user_mg_id = gets.chomp.to_i
-    #find stretch_id for userinput
-    #puts "#{stretch.id}. #{stretch.name}"
+    display_relevant_stretches(user_mg_id)
   end
 
   def self.compile_workout
     user_stretch_id = gets.chomp.to_i
     add_to_workout(user_stretch_id)
-
   end
 
   def self.start_workout
@@ -27,27 +25,19 @@ class Workout < ActiveRecord::Base
     puts "1..."
     sleep 1
     puts "go!"
-    @workout.each do |stretch_instance|
-      puts stretch_instance.name
-      #insert picture / link to video
-      puts stretch_instance.instructions
-      sleep 10
-    end
+    @@current_user.run_workout
   end
 
   def self.choose_favorite
     puts "Choose your favorite stretch"
-    @workout.each do |stretch_instance|
-      puts "#{stretch_instance.id}. #{stretch_instance.name}"
-    end
-    user_input = gets.chomp.to_i
-    binding.pry
-    Favorite.create(user_id: self.id, stretch_id: user_input)
+    @@current_user.display_workout_names
+    user_input_fav = gets.chomp.to_i
+    @@current_user.add_stretch_to_fav(user_input_fav)
   end
 
   def self.run
-    while @workout.length < 2       #change back to five
-      display_muscle_groups
+    while @@workout.length < 2       #change back to five
+      put_muscle_groups
       display_relevant_stretches
       compile_workout
     end
