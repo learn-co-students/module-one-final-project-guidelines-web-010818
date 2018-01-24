@@ -143,6 +143,6 @@ class Cli
   def filter_by_date
     #filter results by date
   end
-  
+
 
 end
