@@ -3,7 +3,9 @@ class CreateEvents < ActiveRecord::Migration[5.0]
     create_table :events, id: false do |t|
       t.string :id, primary: true
       t.string :name
-      t.datetime :date
+      t.datetime :dateTime
+      t.string :venue_id
+      t.string :attraction_id
       t.timestamps
     end
   end
