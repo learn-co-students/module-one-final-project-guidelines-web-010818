@@ -67,6 +67,17 @@ class Cli
     found_events.each do |event|
       find_or_create_event(event)
     end
+
+    events_from_db = Event.select do |event|
+      event.venue_id == venue_id
+    end
+
+    events_from_db.each do |event_row|
+      name = event_row.name
+      venue = Venue.find_by(id:event_row.venue_id)
+      date = event_row.dateTime
+      puts "#{name} - #{venue.name} - #{date}"
+    end
   end
 
   def put_segment_options
@@ -211,11 +222,6 @@ class Cli
   #Matt
 
 
-  def find_events_for_venue
-    # return upcoming events at venue, option to filter by date
-
-  end
-  #Katy
 
   def filter_events_by_date
     #filter results by date
