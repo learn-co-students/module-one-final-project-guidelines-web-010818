@@ -25,7 +25,7 @@ class WorkoutCli < ActiveRecord::Base
     puts "1..."
     sleep 1
     puts "go!"
-    @@current_user.run_workout
+    Workout.run_current_workout
   end
 
   # def self.choose_favorite
@@ -36,7 +36,7 @@ class WorkoutCli < ActiveRecord::Base
   # end
 
   def self.run
-    while Workout.find_workoutstretch_by_workout_id.length < 2       #change back to five  #make workout a table
+    while count < 2 ######       #change back to five  #make workout a table
       put_muscle_groups
       display_relevant_stretches
       compile_workout

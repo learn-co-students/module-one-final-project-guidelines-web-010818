@@ -7,7 +7,8 @@ class Workout < ActiveRecord::Base
 
 
   def self.current_workout_id
-    current_workout = self.where(name: "#{@@current_user}'s workout")
+    search_name = "#{@@current_user.name}'s workout"
+    current_workout = self.where("name = ?", search_name)
     current_workout.id
   end
 

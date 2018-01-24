@@ -1,6 +1,7 @@
-class Cli < ActiveRecord::Base
+class Cli< ActiveRecord::Base
 
   @@current_user = nil
+  
 
   def self.greet_user
     #create welcome screen

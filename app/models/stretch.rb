@@ -19,9 +19,10 @@ class Stretch < ActiveRecord::Base
 
   def self.find_and_add_stretch_to_workout(user_stretch_id)
     user_stretch = Stretch.find(user_stretch_id)
-    new_workout = Workout.find_or_create_by(name: "#{@@current_user}'s workout")
-    WorkoutStretch.create(workout_id: new_workout.id, stretch_id: user_stretch.id)
+    new_workout = Workout.find_or_create_by(name: "#{@@current_user.name}'s workout")
+    WorkoutStretch.create(workout_id: new_workout.id, stretch_id: user_stretch_id)
   end
+
 end
 
 
