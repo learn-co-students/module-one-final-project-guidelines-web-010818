@@ -36,6 +36,7 @@ Item.create(new: true, name: "Comme Des Garçons Vintage Zip Front Vest", style:
 Item.create(new: true, name: "Givenchy Classic Derby Shoes", style: "Formal", category: "Shoe", size: "10", price: 537)
 Item.create(new: true, name: "Alexander Mcqueen Oversized Sneakers", style: "Street wear", category: "Shoe", size: "11", price: 375)
 
+
 fara = User.create(name: "Fara", balance: 100)
 prada_jacket = MarketplaceTransactions.create(user_id:1 , item_id:3, transaction_time:Time.now)
 supreme_sweatpants = MarketplaceTransactions.create(user_id:1 , item_id:11, transaction_time:Time.now)
