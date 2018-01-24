@@ -1,34 +1,29 @@
 class Stretch < ActiveRecord::Base
-  has_many :favorites
-  has_many :users, through: :favorites
+  has_many :stretch_muscle_groups
+  has_many :muscle_groups, through: :stretch_muscle_groups
 
-  has_many :stretch_muscle_group
-  has_many :muscle_groups, through: :stretch_muscle_group
-
+  has_many :workout_stretches
+  has_many :workouts, through: :workout_stretches
   #mg = muscle_group
 
-  def mg_id_to_stretch_id
-
-  relevant_stretches = find_stretches_by_mg_id(user_mg_id)
-  relevant_stretches.each do |stretch|
-    puts "#{stretch.id}. #{stretch.name}"
-  end
 
 
-
-  def self.find_stretches_by_mg_id(user_mg_id)
+  def self.display_stretches(user_mg_id)
     relationships = StretchMuscleGroup.where("muscle_group_id = ?", user_mg_id)
-    relationships.map do |relationship|
-      self.where("id = ?", relationship.stretch_id)
+    relationships.map do |instance_of_StretchMuscleGroup|
+      stretch = Stretch.find(instance_of_StretchMuscleGroup.stretch_id)
+        puts "#{stretch.id}. #{stretch.name}"
     end
   end
 
-  def display_relevant_stretches(user_mg_id)
-    relevant_stretches = self.find_stretches_by_mg_id(user_mg_id)
-    relevant_stretches.each do |stretch|
-      stretch.disply_id_and_name
-    end
+
+  def self.find_and_add_stretch_to_workout(user_stretch_id)
+    user_stretch = Stretch.find(user_stretch_id)
+    new_workout = Workout.find_or_create_by(name: "#{@@current_user}'s workout")
+    WorkoutStretch.create(workout_id: new_workout.id, stretch_id: user_stretch.id)
   end
+end
+
 
 
 ####use for education component later
@@ -41,19 +36,3 @@ class Stretch < ActiveRecord::Base
 #       MuscleGroup.where("id = ?", relationship.muscle_group_id)
 #     end
 #   end
-
-end
-
-
-
-
-
-# MuscleGroup.create(name: "Hamstring")
-# MuscleGroup.create(name: "Lower Back")
-# MuscleGroup.create(name: "Glutes")
-# MuscleGroup.create(name: "Neck and Shoulders")
-# MuscleGroup.create(name: "Arms")
-# MuscleGroup.create(name: "Feet")
-# MuscleGroup.create(name: "Hips")
-# MuscleGroup.create(name: "Legs")
-# MuscleGroup.create(name: "Face")

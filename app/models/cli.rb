@@ -28,7 +28,7 @@ class Cli < ActiveRecord::Base
         # Meditation.run
       elsif user_input == "body"
         choice = user_input
-        Workout.run
+        WorkoutCli.run
       else
         puts "Choose MIND or BODY"
       end
@@ -40,7 +40,6 @@ class Cli < ActiveRecord::Base
     greet_user
     find_or_create_user
     choose_mind_or_body
-
   end
 
 end
