@@ -6,46 +6,51 @@ class Game < ActiveRecord::Base
   has_many :stores, through: :game_store_clues
   has_many :clues, through: :game_store_clues
 
-  attr_accessor :current_location, :last_correct_location
-  # Should start game location at locations[0]
+  attr_accessor :current_neighborhood, :last_correct_neighborhood, :neighborhoods
+  # Should start game neighborhood at neighborhoods[0]
 
-  def welcome
-    puts "Welcome!"
+  def generate_new_game_data
+    associate_game_store_clue_entries(generate_random_neighborhoods)
+    current_neighborhood = neighborhoods[0]
+    last_correct_neighborhood = neighborhoods[0]
+    self.neighborhood = current_neighborhood
+    pick_suspect
+    self.save
   end
 
-  def find_or_create_player
-
+  def generate_random_neighborhoods ## Maybe 10?
+    #Return array of neighborhoods
+    self.neighborhoods = Neighborhood.all.shuffle[0..9]
   end
 
-  def add_player
-    # #Associate player with game
-    # tom.games << game
-    # tom.save
-
+  def associate_game_store_clue_entries(neighborhoods)
+    neighborhoods.each do |n|
+      clues = n.clues.shuffle[0..2]
+      i = 0
+      n.stores.each do |s|
+        gsc = GameStoreClue.create()
+        self.game_store_clues << gsc
+        s.game_store_clues << gsc
+        clues[i].game_store_clues << gsc
+        i += 1
+      end
+    end
   end
 
-  def locations ## Maybe 10?
-    current_location = location_array[0]
-    last_correct_location = location_array[0]
-    #Return array of locations
-  end
-
-  def add_clues_to_stores
-    # Will need to pick random clues for each item in random_locations array using location.clues
-    # Iterate over random_locations, then over locations.stores and assign a location.clues
-    # Use location.shuffle
-    # #Associate game, store, and clue to GameStoreClue
-    # GameStoreClue.create(game: game, store: s, clue: c)
-  end
+  # def neighborhoods
+  #   current_neighborhood = neighborhood_array[0]
+  #   last_correct_neighborhood = neighborhood_array[0]
+  # end
 
   def pick_suspect
     #random number and grab index from suspect array
-    #Associate suspect to game and save
+    random_index = rand(0..15)
+    self.suspect = Suspect.all[random_index]
   end
 
-  def update_location
-    # if new location chosen from menu matches locations[n+1], then current_location
-    # and last_correct_location are updated
+  def update_neighborhood
+    # if new neighborhood chosen from menu matches neighborhoods[n+1], then current_neighborhood
+    # and last_correct_neighborhood are updated
     # game.neighborhood = n
     # game.save
   end
