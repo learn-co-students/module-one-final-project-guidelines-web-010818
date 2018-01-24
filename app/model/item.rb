@@ -24,7 +24,9 @@ class Item < ActiveRecord::Base
       elsif style == "3"
        new_or_used.where("style = ?", "Vintage")
       elsif style == "4"
-       new_or_used(answer)
+       new_or_used(answer).each do |item|
+        puts "stock number: #{item.id}, #{item.name}, price: #{item.price} style: #{item.style}\n"
+       end
      end
     end
 

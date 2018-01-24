@@ -95,11 +95,7 @@ class Cli
     puts "Are you interested in checking out:\n".colorize(:blue) + "1. New items.\n".colorize(:light_yellow) + "2. Used items\n".colorize(:light_yellow) + "3. Display all".colorize(:light_yellow)
     user_new_old = gets.chomp
     Item.new_or_used(user_new_old)
-    if user_new_old == "3"
-      Item.all.each do |item|
-        puts "stock number: #{item.id}, #{item.name}, price: #{item.price}"
-      end
-    end
+
   #  puts "What would you like to do?\n1."
     puts "What style are you looking for?\n".colorize(:blue) + "1. Street wear.\n".colorize(:light_yellow) + "2. Formal\n".colorize(:light_yellow) + "3. Vintage\n".colorize(:light_yellow) + "4. Display all".colorize(:light_yellow)
     user_style = gets.chomp
