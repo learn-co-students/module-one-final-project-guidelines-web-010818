@@ -9,7 +9,7 @@ class Cli
 
   def venue_or_attraction
     # search for venue or event?
-    #search for event by venue, attraction, or both?
+    # search for event by venue, attraction, or both?
   end
 
   def search_for_venue
@@ -80,80 +80,79 @@ class Cli
     city = self.get_input_from_user("Enter a city.")
     hash = ApiCommunicator.get_type_by_city("venues", state, city)
     hash.each do |v|
-      new_venue = Venue.find_or_create_by(id:v['id']) do |venue|
-        venue.name = v['name']
-        venue.city = v['city']['name']
-        venue.state_code = v['state']['stateCode']
-      end
+      find_or_create_venue(v)
     end
     chosen_venue = choose_by_number(hash,"venue")
-
   end
 
-  def get_events_from_venue
-    venue = find_venues_by_city
-    venue_id = venue['id']
-    found_events = ApiCommunicator.get_events_by_venue_id(venue_id)
+  # def puts_events(event_rows)
+  #   events_from_db.each do |event_row|
+  #     name = event_row.name
+  #     venue = Venue.find_by(id:event_row.venue_id)
+  #     date = event_row.dateTime
+  #     puts "#{name} - #{venue.name} - #{date}"
+  #   end
+  # end
 
-    found_events.each do |event|
-      find_or_create_event(event)
-    end
+  # def get_events_from_venue
+  #   venue = find_venues_by_city
+  #   venue_id = venue['id']
+  #   ApiCommunicator.get_events_by_venue_id(venue_id)
+  #
+  #   found_events.each do |event|
+  #     find_or_create_event(event)
+  #   end
+  #
+  #   events_from_db = Event.select do |event|
+  #     event.venue_id == venue_id
+  #   end
+  #
+  #   puts_events(events_from_db)
+  # end
 
-    events_from_db = Event.select do |event|
-      event.venue_id == venue_id
-    end
+  # def put_segment_options
+  #   hash = ApiCommunicator.get_segments
+  #   hash.each do |s|
+  #     Segment.find_or_create_by(id: s['segment']['id']) do |segment|
+  #       segment.name = s['segment']['name']
+  #     end
+  #     puts "-#{s['segment']['name']}"
+  #   end
+  # end
 
-    events_from_db.each do |event_row|
-      name = event_row.name
-      venue = Venue.find_by(id:event_row.venue_id)
-      date = event_row.dateTime
-      puts "#{name} - #{venue.name} - #{date}"
-    end
-  end
+  # def put_genres_in_segment(segment)
+  #   hash = ApiCommunicator.get_segments.select do |s|
+  #     s['segment']['name'] == segment
+  #   end.first
+  #   i = 1
+  #   hash['segment']["_embedded"]["genres"].each do |g|
+  #     Genre.find_or_create_by(id: g['id']) do |genre|
+  #       genre.name = g['name']
+  #     end
+  #     puts "#{i}. #{g['name']}"
+  #     i += 1
+  #   end
+  #
+  #   response = self.get_input_from_user("Please select one of the above by number.")
+  #
+  #   index = response.to_i - 1
+  #   selected_genre = hash['segment']["_embedded"]["genres"][index]
+  #   genre_id = selected_genre["id"]
+  #   attractions = ApiCommunicator.get_attractions_by_genre_id(genre_id)
+  #
+  #   attractions.each do |a|
+  #     new_attraction = self.find_or_create_attraction(a)
+  #     puts new_attraction.name
+  #   end
+  # end
 
-  def put_segment_options
-    hash = ApiCommunicator.get_segments
-    hash.each do |s|
-      Segment.find_or_create_by(id: s['segment']['id']) do |segment|
-        segment.name = s['segment']['name']
-      end
-      puts "-#{s['segment']['name']}"
-    end
-  end
-
-  def put_genres_in_segment(segment)
-    hash = ApiCommunicator.get_segments.select do |s|
-      s['segment']['name'] == segment
-    end.first
-    i = 1
-    hash['segment']["_embedded"]["genres"].each do |g|
-      Genre.find_or_create_by(id: g['id']) do |genre|
-        genre.name = g['name']
-      end
-      puts "#{i}. #{g['name']}"
-      i += 1
-    end
-
-    response = self.get_input_from_user("Please select one of the above by number.")
-
-    index = response.to_i - 1
-    selected_genre = hash['segment']["_embedded"]["genres"][index]
-    genre_id = selected_genre["id"]
-    attractions = ApiCommunicator.get_attractions_by_genre_id(genre_id)
-
-    attractions.each do |a|
-      new_attraction = self.find_or_create_attraction(a)
-      puts new_attraction.name
-    end
-  end
-
-  def find_genres_for_segment
-    puts "These are the available segments:"
-    #segments to more "normal" term?
-    self.put_segment_options
-    segment = self.get_input_from_user("Enter a segment.")
-    self.put_genres_in_segment(segment)
-  end
+  # def find_genres_for_segment
+  #   puts "These are the available segments:"
+  #   #segments to more "normal" term?
+  #   self.put_segment_options
+  #   segment = self.get_input_from_user("Enter a segment.")
+  #   self.put_genres_in_segment(segment)
+  # end
 
 
 
@@ -169,7 +168,7 @@ class Cli
     selected = results[index] #return hash for selected data
   end
 
-  def get_attraction_by_keyword
+  def get_attraction_id_by_keyword
     #get attractions by keyword
     keyword = self.get_input_from_user("Enter a keyword to search for.")
     parsed_results = ApiCommunicator.get_attractions_by_keyword(keyword)
@@ -178,30 +177,28 @@ class Cli
     attraction_id = selected_attraction["id"]
   end
 
+  def collect_ids_from_array(array_of_hashes)
+    array_of_hashes.map do |e|
+      e.id
+    end
+  end
+
   def find_events_for_attraction
-    attraction_id = get_attraction_by_keyword
-    events = ApiCommunicator.get_events_by_attraction_id(attraction_id)
+    events = ApiCommunicator.get_events_by_attraction_id(get_attraction_id_by_keyword)
     newly_added = []
     events.each do |e|
-      new_event = self.find_or_create_event(e)
+      new_event = find_or_create_event(e)
       newly_added << new_event.id
     end
     state_code = filter_events_by_location(newly_added)
     venues_in_state = Venue.select do |venue|
       venue.state_code == state_code
     end
-    venue_ids = venues_in_state.map do |venue|
-      venue.id
-    end
+    venue_ids = collect_ids_from_array(venues_in_state)
     found_events = Event.select do |event|
       event.attraction_id == attraction_id && venue_ids.include?(event.venue_id)
     end
-    found_events.map do |event|
-      name = event.name
-      venue = Venue.find_by(id:event.venue_id)
-      date = event.dateTime
-      puts "#{name} - #{venue.name} - #{date}"
-    end
+    puts_events(found_events)
   end
 
 
@@ -228,12 +225,12 @@ class Cli
     chosen_state #return state code
   end
 
-  def filter_event_results(event_results)
-    if event_results.size > 20
-      # filter by date
-      # filter by location
-    end
-  end
+  # def filter_event_results(event_results)
+  #   if event_results.size > 20
+  #     # filter by date
+  #     # filter by location
+  #   end
+  # end
 
 
   def find_attractions_for_genre
@@ -241,7 +238,6 @@ class Cli
     find_genres_for_segment
     response = get_input_from_user("")
     #built genre retrieval in #puts genres by segment
-
 
   end
   #Matt
