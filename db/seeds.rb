@@ -21,7 +21,7 @@ Suspect.find_or_create_by( name: "Andrew The Awful",
   gender: "male",
   hair_color: "brown",
   eye_color: "brown",
-  vehicle: "beat up truck",
+  vehicle: "truck",
   favorite_food: "hamburgers" )
 Suspect.find_or_create_by( name: "Bad Barry",
   gender: "male",
@@ -33,20 +33,20 @@ Suspect.find_or_create_by( name: "Dastardly David",
   gender: "male",
   hair_color: "brown",
   eye_color: "blue",
-  vehicle: "scooter",
+  vehicle: "truck",
   favorite_food: "Mexican" )
 Suspect.find_or_create_by( name: "Edward Evil",
   gender: "male",
   hair_color: "white",
   eye_color: "hazel",
-  vehicle: "white Jeep",
-  favorite_food: "Pizza" )
+  vehicle: "motorcycle",
+  favorite_food: "pizza" )
 Suspect.find_or_create_by( name: "Feckless Fran",
   gender: "female",
   hair_color: "black",
   eye_color: "brown",
-  vehicle: "red sedan",
-  favorite_food: "Pizza" )
+  vehicle: "limousine",
+  favorite_food: "pizza" )
 Suspect.find_or_create_by( name: "Ghastly Gertrude",
   gender: "female",
   hair_color: "red",
@@ -57,7 +57,7 @@ Suspect.find_or_create_by( name: "Irritating Ivan",
   gender: "male",
   hair_color: "black",
   eye_color: "blue",
-  vehicle: "bicycle",
+  vehicle: "limousine",
   favorite_food: "hot dogs" )
 Suspect.find_or_create_by( name: "Jowly Janet",
   gender: "female",
@@ -69,13 +69,13 @@ Suspect.find_or_create_by( name: "Killer Kyle",
   gender: "male",
   hair_color: "blond",
   eye_color: "blue",
-  vehicle: "sedan",
+  vehicle: "convertible"
   favorite_food: "Italian" )
 Suspect.find_or_create_by( name: "Dastardly David",
   gender: "male",
   hair_color: "brown",
   eye_color: "blue",
-  vehicle: "black scooter",
+  vehicle: "skateboard",
   favorite_food: "Mexican" )
 Suspect.find_or_create_by( name: "Lily-Livered Lily",
   gender: "female",
@@ -87,8 +87,14 @@ Suspect.find_or_create_by( name: "Moody Monique",
   gender: "female",
   hair_color: "black",
   eye_color: "blue",
-  vehicle: "truck",
+  vehicle: "skateboard",
   favorite_food: "Italian" )
+Suspect.find_or_create_by( name: "Carmen Sandiego",
+  gender: "female",
+  hair_color: "brown",
+  eye_color: "brown",
+  vehicle: "convertible",
+  favorite_food: "Mexican" )
 
   #Seed Neighborhoods (Look up list)
   tribeca = Neighborhood.create(name: "Tribeca")
