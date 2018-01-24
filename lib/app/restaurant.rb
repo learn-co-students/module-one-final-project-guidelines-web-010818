@@ -64,4 +64,15 @@ class Restaurant < ActiveRecord::Base
       puts "Text: #{meal_pal_review.content}"
     end
   end
+
+  def average_mealpal_review
+    review_ratings = self.reviews.map do |review|
+      review.rating
+    end
+    review_ratings.compact.inject{ |sum, el| sum + el }.to_f / review_ratings.compact.size
+  end
+
+  def self.top_10_yelp_restaurants
+    self.all.order(yelp_rating: :desc).limit(10)
+  end
 end

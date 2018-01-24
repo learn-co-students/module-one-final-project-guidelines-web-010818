@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180124181406) do
+ActiveRecord::Schema.define(version: 20180124195935) do
 
   create_table "favorites", force: :cascade do |t|
     t.integer "user_id"
@@ -32,6 +32,8 @@ ActiveRecord::Schema.define(version: 20180124181406) do
     t.float "longitude"
     t.integer "yelp_review_count"
     t.string "yelp_id"
+    t.string "category"
+    t.float "mealpal_rating"
   end
 
   create_table "reviews", force: :cascade do |t|

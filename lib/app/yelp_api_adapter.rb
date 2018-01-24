@@ -97,6 +97,8 @@ class YelpApiAdapter
         parsed_hash["phone_number"] = v
       when "name"
         parsed_hash[k] = v
+      when "categories"
+        parsed_hash["category"] = v.first["alias"]
       end
     end
     parsed_hash
