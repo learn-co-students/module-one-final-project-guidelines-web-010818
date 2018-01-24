@@ -29,11 +29,11 @@ class User < ActiveRecord::Base
   end
 
   def select_restaurant(restaurant_instance_array, input)
-    restaurant_instance_array[input - 1]
+    restaurant_instance_array[input.to_i - 1]
   end
 
   def select_meal(restaurant_instance, input)
-    restaurant_instance.meals[input - 1]
+    restaurant_instance.meals[input.to_i - 1]
   end
 
 
@@ -43,6 +43,8 @@ class User < ActiveRecord::Base
     Review.find_and_update(user_id: self.id, meal_id: meal.id, rating: rating, content: content)
     meal.restaurant.update(mealpal_rating: meal.restaurant.average_mealpal_review)
     self.update(average_mealpal_rating: self.calculate_average_mealpal_rating, number_of_reviews: self.reviews.size)
+    puts "Review created."
+    true
   end
 
 
@@ -54,6 +56,8 @@ class User < ActiveRecord::Base
     Review.find_and_update(user_id: self.id, meal_id: new_meal.id, rating: rating, content: content)
     restaurant.update(mealpal_rating: restaurant.average_mealpal_review)
     self.update(average_mealpal_rating: self.calculate_average_mealpal_rating, number_of_reviews: self.reviews.size)
+    puts "Review created."
+    true
   end
 
   def calculate_average_mealpal_rating

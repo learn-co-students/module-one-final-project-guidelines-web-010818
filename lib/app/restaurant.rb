@@ -57,7 +57,7 @@ class Restaurant < ActiveRecord::Base
     end
   end
 
-  def display_meal_pal_review
+  def display_mealpal_reviews
     meal_pal_reviews = self.reviews
     meal_pal_reviews.each do |meal_pal_review|
       puts "Name: #{meal_pal_review.user.name}"
@@ -85,4 +85,11 @@ class Restaurant < ActiveRecord::Base
   def self.top_10_mealpal
     self.all.order(mealpal_rating: :desc).limit(10)
   end
+
+  def convert_object_to_hash
+    hash = {}
+    self.instance_variables.each{|var| hash[var.to_s.delete("@")] = self.instance_variable_get(var)}
+    hash
+  end
+
 end

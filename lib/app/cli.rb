@@ -73,9 +73,9 @@ class Cli
   end
 
   def display_menu_options
-    puts "1. View Your Past Meals"
+    puts "1. View Your Past Meals and Reviews"
     puts "2. Enter a New Review"
-    puts "3. Search Restaurants"
+    puts "3. Search Yelp"
     puts "4. View All Reviews"
     puts "5. Change User"
     puts "6. Exit"
@@ -83,9 +83,77 @@ class Cli
 
     case input
     when 1
+      self.current_user.display_user_info
       self.current_user.print_user_reviews
+      display_menu_options
     when 2
-      
+      puts "Please enter restaurant name:"
+      input = gets.chomp
+
+      restaurants = YelpApiAdapter.user_search_and_display(input, self.current_user.location)
+      if restaurants
+        puts "Please select restaurant (1-5):"
+        input = gets.chomp.to_i
+        restaurant = self.current_user.select_restaurant(restaurants, input)
+        restaurant = Restaurant.find_or_create_by(restaurant.attributes.delete_if{|k,v| k == "id"})
+        restaurant.display_meals
+        puts "#{restaurant.meals.size + 1}. Create new meal"
+        input = gets.chomp.to_i
+        meal = self.current_user.select_meal(restaurant, input)
+        if meal
+          puts "Please enter meal rating:"
+          rating = gets.chomp
+          puts "Please enter review:"
+          content = gets.chomp
+          self.current_user.add_review_for_existing_meal(meal: meal, rating: rating, content: content)
+        elsif input == restaurant.meals.size + 1
+          puts "Please enter meal name:"
+          meal_name = gets.chomp
+          puts "Please enter meal rating:"
+          rating = gets.chomp
+          puts "Please enter review:"
+          content = gets.chomp
+          self.current_user.add_review_for_new_meal(meal_name: meal_name, restaurant: restaurant, rating: rating, content: content)
+        else
+          puts "Please try again"
+          #call method to start review process again here
+        end
+      else
+        puts "No results found. Please search again."
+        display_menu_options
+      end
+    when 3
+      puts "Search Yelp: "
+      input = gets.chomp
+      restaurants = YelpApiAdapter.user_search_and_display(input, self.current_user.location)
+
+      if restaurants
+        puts "Please select restaurant (1-5):"
+        input = gets.chomp.to_i
+        restaurant = self.current_user.select_restaurant(restaurants, input)
+        restaurant = Restaurant.find_or_create_by(restaurant.attributes.delete_if{|k,v| k == "id" || k == "mealpal_rating"})
+        restaurant.display_yelp_reviews
+        binding.pry
+        restaurant.display_mealpal_reviews
+        # refactor to have method to add review
+        puts "Enter 1 to return to main menu"
+        input = gets.chomp.to_i
+        if input == 1
+          display_menu_options
+        end
+      else
+        puts "Please try again"
+        display_menu_options
+        #call method to start review process again here
+      end
+
+
+
+
+
+
+    when 6
+      exit
     end
   end
 
