@@ -53,8 +53,19 @@ class Cli
     selected_attraction = parsed_results[index]
     attraction_id = selected_attraction["id"]
     events = ApiCommunicator.get_events_by_attraction_id(attraction_id)
-    binding.pry
+    events.each do |e|
+      new_event = Event.find_or_create_by(id:e["id"]) do |event|
+
+        event.name = e['name']
+        event.venue_id = e['_embedded']['venues'][0]['id']
+        event.attraction_id = e['_embedded']['attractions'][0]['id']
+        event.dateTime = e['dates']['start']['dateTime']
+
+      end
+    end
+
     
+
     # search events with attractionId
 
   end

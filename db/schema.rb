@@ -24,9 +24,11 @@ ActiveRecord::Schema.define(version: 20180123163621) do
   create_table "events", id: false, force: :cascade do |t|
     t.string   "id"
     t.string   "name"
-    t.datetime "date"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "dateTime"
+    t.string   "venue_id"
+    t.string   "attraction_id"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
   create_table "genres", id: false, force: :cascade do |t|
