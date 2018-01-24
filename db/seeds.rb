@@ -21,7 +21,7 @@ Suspect.find_or_create_by( name: "Andrew The Awful",
   gender: "male",
   hair_color: "brown",
   eye_color: "brown",
-  vehicle: "beat up truck",
+  vehicle: "truck",
   favorite_food: "hamburgers" )
 Suspect.find_or_create_by( name: "Bad Barry",
   gender: "male",
@@ -33,20 +33,20 @@ Suspect.find_or_create_by( name: "Dastardly David",
   gender: "male",
   hair_color: "brown",
   eye_color: "blue",
-  vehicle: "scooter",
+  vehicle: "truck",
   favorite_food: "Mexican" )
 Suspect.find_or_create_by( name: "Edward Evil",
   gender: "male",
   hair_color: "white",
   eye_color: "hazel",
-  vehicle: "white Jeep",
-  favorite_food: "Pizza" )
+  vehicle: "motorcycle",
+  favorite_food: "pizza" )
 Suspect.find_or_create_by( name: "Feckless Fran",
   gender: "female",
   hair_color: "black",
   eye_color: "brown",
-  vehicle: "red sedan",
-  favorite_food: "Pizza" )
+  vehicle: "limousine",
+  favorite_food: "pizza" )
 Suspect.find_or_create_by( name: "Ghastly Gertrude",
   gender: "female",
   hair_color: "red",
@@ -57,7 +57,7 @@ Suspect.find_or_create_by( name: "Irritating Ivan",
   gender: "male",
   hair_color: "black",
   eye_color: "blue",
-  vehicle: "bicycle",
+  vehicle: "limousine",
   favorite_food: "hot dogs" )
 Suspect.find_or_create_by( name: "Jowly Janet",
   gender: "female",
@@ -69,13 +69,13 @@ Suspect.find_or_create_by( name: "Killer Kyle",
   gender: "male",
   hair_color: "blond",
   eye_color: "blue",
-  vehicle: "sedan",
+  vehicle: "convertible"
   favorite_food: "Italian" )
 Suspect.find_or_create_by( name: "Dastardly David",
   gender: "male",
   hair_color: "brown",
   eye_color: "blue",
-  vehicle: "black scooter",
+  vehicle: "skateboard",
   favorite_food: "Mexican" )
 Suspect.find_or_create_by( name: "Lily-Livered Lily",
   gender: "female",
@@ -87,8 +87,14 @@ Suspect.find_or_create_by( name: "Moody Monique",
   gender: "female",
   hair_color: "black",
   eye_color: "blue",
-  vehicle: "truck",
+  vehicle: "skateboard",
   favorite_food: "Italian" )
+Suspect.find_or_create_by( name: "Carmen Sandiego",
+  gender: "female",
+  hair_color: "brown",
+  eye_color: "brown",
+  vehicle: "convertible",
+  favorite_food: "Mexican" )
 
   #Seed Neighborhoods (Look up list)
   tribeca = Neighborhood.create(name: "Tribeca")
@@ -136,7 +142,60 @@ Suspect.find_or_create_by( name: "Moody Monique",
   west_village.stores << Store.create(name: "IFC Center", witness: "Popcorn Maker")
 
   #Seed Clues (Maybe 10 per neighborhood)
-  tribeca.clues << Clue.create(text: "The is a really useful clue.")
+  tribeca.clues << Clue.create(text: "I saw them near the Triangle Below Canal Street.")
+  tribeca.clues << Clue.create(text: "I heard they were trying to get in to a famous film festival.")
+  tribeca.clues << Clue.create(text: "I heard they were driving towards the Holland Tunnel.")
+  tribeca.clues << Clue.create(text: "I heard they wanted to relax for while at Washington Market Park.")
+  tribeca.clues << Clue.create(text: "They were seen strolling through BMCC.")
+  tribeca.clues << Clue.create(text: "They were in an area where a lot of industrial buildings were turned into residential lofts.")
+  tribeca.clues << Clue.create(text: "They were seen walking from Target to Whole Foods, which was just around the block.")
+  tribeca.clues << Clue.create(text: "They were spotted playing mini golf by the river.")
+  tribeca.clues << Clue.create(text: "Someone saw them getting off at the Chambers Street Subway Station.")
+  tribeca.clues << Clue.create(text: "I think I saw them looking for the fire station where Ghostbusters was filmed.")
+
+  central_park.clues << Clue.create(text: "I heard they wanted to rent a boat.")
+  central_park.clues << Clue.create(text: "I heard they wanted to see the first official zoo in New York.")
+  central_park.clues << Clue.create(text: "I heard they wanted to see the most visited urban park in the United States.")
+  central_park.clues << Clue.create(text: "I heard they wanted to ride a carousel.")
+  central_park.clues << Clue.create(text: "I heard they were looking for Rat Rock.")
+  central_park.clues << Clue.create(text: "I heard they were looking for an Alice in Wonderland sculpture.")
+  central_park.clues << Clue.create(text: "I heard they were looking for a meadow where sheep used to graze.")
+  central_park.clues << Clue.create(text: "I saw them heading towards a castle whose name means 'beautiful view' in Italian.")
+  central_park.clues << Clue.create(text: "They wanted to go to a mall that didn't have stores.")
+  central_park.clues << Clue.create(text: "They wanted to see a place that is a swimming pool in the summer and a skating/hockey rink during the winter.")
+
+  times_square.clues << Clue.create(text: "They wanted to get their picture taken with a super hero.")
+  times_square.clues << Clue.create(text: "They wanted to see the world's second most visited tourist attraction.")
+  times_square.clues << Clue.create(text: "They wanted to walk down one of the world's busiest pedestrian area.")
+  times_square.clues << Clue.create(text: "I saw them heading towards an area named after a newspaper.")
+  times_square.clues << Clue.create(text: "They were interested in the large crowd that gathered to celebrate Victory over Japan Day.")
+  times_square.clues << Clue.create(text: "They wanted to see the brightest spot in the city.")
+  times_square.clues << Clue.create(text: "They were interested in a glowing crystal ball on a flagpole.")
+  times_square.clues << Clue.create(text: "They wanted to see if they could get tickets to Good Morning America.")
+  times_square.clues << Clue.create(text: "They had a hankering for discounted show tickets.")
+  times_square.clues << Clue.create(text: "They wanted to see the neighborhood where building owners are required to displayed illuminated signs via zoning ordinances.")
+
+  chelsea.clues << Clue.create(text: "They wanted to see one of the centers of the city's art world.")
+  chelsea.clues << Clue.create(text: "They were seen where the Empire Diner used to be.")
+  chelsea.clues << Clue.create(text: "They wanted to see an Irish play.")
+  chelsea.clues << Clue.create(text: "They wanted to see a museum dedicated to Himalayan art.")
+  chelsea.clues << Clue.create(text: "They were asking questions about the New York Google office.")
+  chelsea.clues << Clue.create(text: "They were wondering about the hotel where Sid Vicious committed his infamous murder.")
+  chelsea.clues << Clue.create(text: "They were loitering in front of one of the world's largest apartment blocks when it opened in 1930.")
+  chelsea.clues << Clue.create(text: "They were seen leaving the oldest episcopal seminary in nyc.")
+  chelsea.clues << Clue.create(text: "They were asking about the Doughboy Statue.")
+  chelsea.clues << Clue.create(text: "They were interested in the former site of Textile High School.")
+
+  union_square.clues << Clue.create(text: "They wanted to see a statue of George Washington on a horse.")
+  union_square.clues << Clue.create(text: "They love statues of Mahatma Gandhi.")
+  union_square.clues << Clue.create(text: "They were looking for a large, year round Farmer's Market.")
+  union_square.clues << Clue.create(text: "They were seen walking away from an iconic holiday market.")
+  union_square.clues << Clue.create(text: "They wanted to challenge someone to a game of street chess.")
+  union_square.clues << Clue.create(text: "They wanted to participate in a political demonstration.")
+  union_square.clues << Clue.create(text: "They were seen walking away from the Hall associated with the infamous Boss Tweed.")
+  union_square.clues << Clue.create(text: "They were searching for the former site of the old Rialto theatrical strip, New York City's first commercial theater district.")
+  union_square.clues << Clue.create(text: "I heard they were snooping around a large LED clock that displays the time in 24-hour format.")
+  union_square.clues << Clue.create(text: "I heard them asking questions about Donndorf statues in New York.")
 
 
   meatpacking.clues << Clue.create(text: "They are headed to the west side. That's all I know, I swear.")
@@ -149,6 +208,7 @@ Suspect.find_or_create_by( name: "Moody Monique",
   meatpacking.clues << Clue.create(text: "They casually stated that SoHo was too crowded, so they were planning on getting some designer duds somewhere else.")
   meatpacking.clues << Clue.create(text: "All I heard was something about cobblestone streets. I know it's not much, but I hope it helps catch the crook.")
   meatpacking.clues << Clue.create(text: "It looked like they were heading near the West Village and Chelsea.")
+
   les.clues << Clue.create(text: "It looked like they were heading to the east side.")
   les.clues << Clue.create(text: "They said that they wanted to get a pastrami sandwich and recreate 'When Harry Met Sally'.")
   les.clues << Clue.create(text: "They talked about heading to Russ and Daughters for a bagel.")
@@ -159,6 +219,7 @@ Suspect.find_or_create_by( name: "Moody Monique",
   les.clues << Clue.create(text: "They looked like the type to catch a show at Piano's or Arlene's Grocery.")
   les.clues << Clue.create(text: "They were talking about getting some brunch at the Clinton St. Baking Company.")
   les.clues << Clue.create(text: "They mentioned catching a movie at the Metrograph Theater.")
+
   soho.clues << Clue.create(text: "They mentioned heading south of Houston St.")
   soho.clues << Clue.create(text: "I think they are planning on spending some of their ill-gotten gains on a shopping spree.")
   soho.clues << Clue.create(text: "They said something about being downtown.")
@@ -169,6 +230,7 @@ Suspect.find_or_create_by( name: "Moody Monique",
   soho.clues << Clue.create(text: "I would look downtown, probably just south of Greenwich Village.")
   soho.clues << Clue.create(text: "I don't know exactly where, but they mentioned the sidewalks being incredibly crowded at their next destination.")
   soho.clues << Clue.create(text: "I might've seen them when I had lunch at Balthazar today.")
+
   uws.clues << Clue.create(text: "I think they are going uptown.")
   uws.clues << Clue.create(text: "Word on the street is that they are hanging out on the west side.")
   uws.clues << Clue.create(text: "I think they had tickets for a show at the Beacon Theater.")
@@ -179,6 +241,7 @@ Suspect.find_or_create_by( name: "Moody Monique",
   uws.clues << Clue.create(text: "I would take a look at New York City Ballet. Those ballerinas always look like they are up to something. I don't trust them.")
   uws.clues << Clue.create(text: "If i had to guess where they were heading, I would take a look at the neighborhood above Hell's Kitchen. Just a hunch.")
   uws.clues << Clue.create(text: "They were planning on taking a bike ride on Riverside Park.")
+
   west_village.clues << Clue.create(text: "I think they were heading to the west side of Greenwich Village.")
   west_village.clues << Clue.create(text: "I heard something about them going downtown.")
   west_village.clues << Clue.create(text: "They kept talking about getting a burger at the Corner Bistro.")
