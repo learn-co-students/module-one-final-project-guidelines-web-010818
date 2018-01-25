@@ -46,7 +46,7 @@ class Cli
     puts
     puts "1. Interview Witnesses"
     puts "2. Travel to Next Location"
-    puts "3. Record Evidence"
+    puts "3. Look at your Evidence Book"
     puts "4. End Game"
     puts
     response = gets.chomp
@@ -392,7 +392,7 @@ class Cli
 
   def issue_warrant
     puts
-    puts "You should have enough intel to issue a warrant. Here are the remaining suspects:"
+    puts "You should have enough intel to issue a warrant."
     current_list_of_suspects
     puts
     puts "Which suspect would you like to arrest?"
