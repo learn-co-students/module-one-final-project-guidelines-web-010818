@@ -11,8 +11,8 @@ class Game < ActiveRecord::Base
 
   def generate_new_game_data
     associate_game_store_clue_entries(generate_random_neighborhoods)
-    current_neighborhood = neighborhoods[0]
-    last_correct_neighborhood = neighborhoods[0]
+    @current_neighborhood = neighborhoods[0]
+    @last_correct_neighborhood = neighborhoods[0]
     self.neighborhood = current_neighborhood
     pick_suspect
     self.save
@@ -20,7 +20,7 @@ class Game < ActiveRecord::Base
 
   def generate_random_neighborhoods ## Maybe 10?
     #Return array of neighborhoods
-    self.neighborhoods = Neighborhood.all.shuffle[0..9]
+    self.neighborhoods = Neighborhood.all.shuffle[0..4]
   end
 
   def associate_game_store_clue_entries(neighborhoods)
