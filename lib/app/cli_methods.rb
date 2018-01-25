@@ -1,0 +1,3 @@
+class CliMethods
+
+end

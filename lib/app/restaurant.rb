@@ -86,10 +86,15 @@ class Restaurant < ActiveRecord::Base
     self.all.order(mealpal_rating: :desc).limit(10)
   end
 
-  def convert_object_to_hash
-    hash = {}
-    self.instance_variables.each{|var| hash[var.to_s.delete("@")] = self.instance_variable_get(var)}
-    hash
+  def self.find_or_create_by_instance(restaurant_instance)
+    found = Restaurant.find_by(restaurant_instance.yelp_id)
+    if found
+      found
+    else
+      restaurant_instance.save
+    end
   end
+
+
 
 end
