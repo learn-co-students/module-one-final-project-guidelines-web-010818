@@ -66,18 +66,24 @@ class Cli
   end
 
   def interview
-    next_neighborhood = current_game.next_correct_neighborhood
-    #Need to access witnesses for stores in current neighborhood
-    store1 = current_game.neighborhood.stores[0]
-    store2 = current_game.neighborhood.stores[1]
-    store3 = current_game.neighborhood.stores[2]
+    if !current_game.next_correct_neighborhood.nil?
+      next_neighborhood = current_game.next_correct_neighborhood
+      #Need to access witnesses for stores in current neighborhood
+      store1 = current_game.neighborhood.stores[0]
+      store2 = current_game.neighborhood.stores[1]
+      store3 = current_game.neighborhood.stores[2]
+      #Need to access clues for *next* correct neighborhood
+      next_store1 = next_neighborhood.stores[0]
+      next_store2 = next_neighborhood.stores[1]
+      next_store3 = next_neighborhood.stores[2]
 
-    #Need to access clues for *next* correct neighborhood
-    next_store1 = next_neighborhood.stores[0]
-    next_store2 = next_neighborhood.stores[1]
-    next_store3 = next_neighborhood.stores[2]
-
-    interview_menu(current_game.neighborhood.stores, next_neighborhood.stores)
+      interview_menu(current_game.neighborhood.stores, next_neighborhood.stores)
+    else
+      puts
+      puts "You reached the end!"
+      puts
+      exit
+    end
   end
 
   def interview_menu(store, next_store)
@@ -116,13 +122,28 @@ class Cli
 
   def get_clue(store)
     if get_travel_options.size > 1 # Meaning, you're on the right track!
-      gsc = current_game.game_store_clues.select { |gsc| gsc.store == store }
-      gsc[0].clue.text
+      gsc = current_game.game_store_clues.select { |gsc| gsc.store == store }[0]
+      final_clue = gsc.clue.text
+      #Logic to only sometimes grab a trait clue and append to clue string?
+      current_index = current_game.neighborhoods.find_index(current_game.current_neighborhood)
+      store_index = store.neighborhood.stores.find_index(store)
+
+      # Grabs 30% of time based on neighborhoods index and 60% of the time based on store_index
+      if (current_index % 2 == 0) && ((store_index % 2) == 0)
+        traits = Suspect.column_names
+
+        ##pick random trait, ignoring id and name column
+        trait_clue = traits[rand(2..(traits.size - 1))]
+        trait_value = current_game.suspect[trait_clue]
+        trait_clue_normalized = trait_clue.gsub("_", " ")
+        trait_clue_text = " It looked like their #{trait_clue_normalized} was #{trait_value}."
+        final_clue = final_clue + trait_clue_text
+      end
+      final_clue
     else
       bad_clues = Clue.all.select { |c| c.neighborhood == nil }
       bad_clues[rand(0..2)].text
     end
-    #Logic to only sometimes grab a trait clue and append to clue string?
   end
 
   def travel(options)
