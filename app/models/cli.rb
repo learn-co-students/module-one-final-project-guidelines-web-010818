@@ -66,8 +66,7 @@ class Cli
   end
 
   def interview
-    next_index = current_game.neighborhoods.find_index(current_game.neighborhood) + 1
-    next_neighborhood = current_game.neighborhoods[next_index]
+    next_neighborhood = current_game.next_correct_neighborhood
     #Need to access witnesses for stores in current neighborhood
     store1 = current_game.neighborhood.stores[0]
     store2 = current_game.neighborhood.stores[1]
@@ -116,9 +115,13 @@ class Cli
   end
 
   def get_clue(store)
-    gsc = current_game.game_store_clues.select { |gsc| gsc.store == store }
-    gsc[0].clue.text
-
+    if get_travel_options.size > 1 # Meaning, you're on the right track!
+      gsc = current_game.game_store_clues.select { |gsc| gsc.store == store }
+      gsc[0].clue.text
+    else
+      bad_clues = Clue.all.select { |c| c.neighborhood == nil }
+      bad_clues[rand(0..2)].text
+    end
     #Logic to only sometimes grab a trait clue and append to clue string?
   end
 

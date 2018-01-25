@@ -247,3 +247,7 @@ Suspect.find_or_create_by( name: "Carmen Sandiego",
   west_village.clues << Clue.find_or_create_by(text: "They said something about SATC, and needing a cupcake.")
   west_village.clues << Clue.find_or_create_by(text: "They let it slip that they are going to see the site of the Stonewall riots.")
   west_village.clues << Clue.find_or_create_by(text: "I think they were going to the 2nd oldest bar in the city, The Ear Inn.")
+
+  Clue.find_or_create_by(text: "I haven't seen anyone. Now leave me alone.")
+  Clue.find_or_create_by(text: "Sorry, I don't know anything about that.")
+  Clue.find_or_create_by(text: "That's an interesting story, but I don't have any info for you.")
