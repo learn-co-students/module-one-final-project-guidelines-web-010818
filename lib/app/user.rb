@@ -5,11 +5,64 @@ class User < ActiveRecord::Base
   has_many :reviews
   has_many :meals, through: :reviews
 
-  # after_initialize :set_default_values
-  #
-  # def set_default_values
-  #   self.location = "11 Broadway, New York, NY 10004"
-  # end
+  #User
+  def self.create_user_or_login
+    input = gets.chomp.to_i
+    case input
+    when 1
+      self.create_user
+    when 2
+      self.login
+    else
+      puts "Incorrect Input"
+      self.create_user_or_login
+    end
+  end
+
+  #User
+  def self.login
+    puts "Please enter your username: "
+    username = gets.chomp.split(" ").map{|w| w.capitalize}.join(" ")
+    self.find_by(name: username)
+  end
+
+  #User
+  def self.create_user
+    puts "Please enter a new username: "
+    username = gets.chomp.split(" ").map{|w| w.capitalize}.join(" ")
+    if self.find_by(name: username)
+      puts "Username already taken."
+      self.create_user
+    else
+      self.create(name: username)
+    end
+  end
+
+  #User
+  def ask_and_update_location
+    if !self.location
+      puts "Please set your location: "
+      new_location = gets.chomp
+      self.update(location: new_location)
+      puts "New location saved"
+    else
+      puts "Your location is set as #{self.location}. Is this still your location?"
+      puts " 1. Yes, this is still my location \n 2. Update my location"
+      input = gets.chomp.to_i
+
+      case input
+      when 1
+        puts "Location unchanged"
+      when 2
+        puts "Enter your new location:"
+        new_location = gets.chomp
+        self.update(location: new_location)
+      else
+        puts "Incorrect input."
+        ask_location
+      end
+    end
+  end
 
   def print_user_reviews
     self.restaurants.each do |restaurant|

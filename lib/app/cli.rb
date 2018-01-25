@@ -3,73 +3,23 @@ class Cli < CliMethods
 
   def initialize
     @current_user = nil
+    @previous_menu = nil
   end
+
+  # def run
+  #   welcome
+  #   ask_location
+  #   display_menu_options
+  # end
 
   def run
-    welcome
-    ask_location
-    display_menu_options
-  end
-
-  def welcome
     puts "Welcome to the MealPal Rating App"
-    create_user_or_login
-  end
-
-  def create_user_or_login
     puts " 1. New User \n 2. Returning User"
-    input = gets.chomp.to_i
-    case input
-    when 1
-      create_user
-    when 2
-      login
-    else
-      puts "Incorrect Input"
-      create_user_or_login
-    end
-  end
-
-  def login
-    puts "Please enter your username: "
-    username = gets.chomp.split(" ").map{|w| w.capitalize}.join(" ")
-    self.current_user = User.find_by(name: username)
-  end
-
-  def create_user
-    puts "Please enter a new username: "
-    username = gets.chomp.split(" ").map{|w| w.capitalize}.join(" ")
-    if User.find_by(name: username)
-      puts "Username already taken."
-      create_user
-    else
-      self.current_user = User.create(name: username)
-    end
-  end
-
-  def ask_location
-    if !self.current_user.location
-      puts "Please set your location: "
-      new_location = gets.chomp
-      self.current_user.update(location: new_location)
-      puts "New location saved"
-    else
-      puts "Your location is set as #{self.current_user.location}. Is this still your location?"
-      puts " 1. Yes, this is still my location \n 2. Update my location"
-      input = gets.chomp.to_i
-
-      case input
-      when 1
-        puts "Location unchanged"
-      when 2
-        puts "Enter your new location:"
-        new_location = gets.chomp
-        self.current_user.update(location: new_location)
-      else
-        puts "Incorrect input."
-        ask_location
-      end
-    end
+    self.current_user = User.create_user_or_login
+    self.current_user.ask_and_update_location
+    binding.pry
+    # puts " 1. Yes, this is still my location \n 2. Update my location"
+    # update_location
   end
 
   def display_menu_options
@@ -137,19 +87,24 @@ class Cli < CliMethods
       end
 
     when 4
-      Table.new.display_stats_menu
-      input = gets.chomp.to_i
-
-      case input
-      when 1
-      when 2
-      when 3
-      when 4
-      when 5
-
-      else
-        puts "Input a correct number"
-      end
+      stats_menu
+      # Table.new.display_stats_menu
+      # input = gets.chomp.to_i
+      #
+      # case input
+      # when 1
+      #   Table.new.display_top_10_yelp
+      # when 2
+      #   Table.new.display_top_10_mealpal
+      # when 3
+      #   Table.new.display_user_stats(User.most_active, "Most Active Users")
+      # when 4
+      #   Table.new.display_user_stats(User.most_critical, "Most Critical Users")
+      # when 5
+      #   Table.new.display_user_stats(User.least_critical, "Kindest Users")
+      # else
+      #   puts "Input a correct number"
+      # end
 
 
     when 5
