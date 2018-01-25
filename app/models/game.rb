@@ -6,13 +6,14 @@ class Game < ActiveRecord::Base
   has_many :stores, through: :game_store_clues
   has_many :clues, through: :game_store_clues
 
-  attr_accessor :current_neighborhood, :last_correct_neighborhood, :neighborhoods
+  attr_accessor :current_neighborhood, :last_correct_neighborhood, :next_correct_neighborhood, :neighborhoods
   # Should start game neighborhood at neighborhoods[0]
 
   def generate_new_game_data
     associate_game_store_clue_entries(generate_random_neighborhoods)
     @current_neighborhood = neighborhoods[0]
     @last_correct_neighborhood = neighborhoods[0]
+    @next_correct_neighborhood = neighborhoods[1]
     self.neighborhood = current_neighborhood
     pick_suspect
     self.save

@@ -1,3 +1,5 @@
+require 'io/console'
+
 class Cli
   attr_accessor :current_game
 
@@ -76,12 +78,16 @@ class Cli
     next_store2 = next_neighborhood.stores[1]
     next_store3 = next_neighborhood.stores[2]
 
+    interview_menu(current_game.neighborhood.stores, next_neighborhood.stores)
+  end
+
+  def interview_menu(store, next_store)
     puts
     puts "Which place would you like to visit?"
     puts
-    puts "1. #{store1.name}"
-    puts "2. #{store2.name}"
-    puts "3. #{store3.name}"
+    puts "1. #{store[0].name}"
+    puts "2. #{store[1].name}"
+    puts "3. #{store[2].name}"
     puts "4. Go Back"
     puts
 
@@ -90,16 +96,16 @@ class Cli
     case response
     when "1"
       puts
-      puts "The #{store1.witness} says: \"#{get_clue(next_store1)}\""
-      interview
+      puts "The #{store[0].witness} says: \"#{get_clue(next_store[0])}\""
+      interview_menu(store, next_store)
     when "2"
       puts
-      puts "The #{store2.witness} says: \"#{get_clue(next_store2)}\""
-      interview
+      puts "The #{store[1].witness} says: \"#{get_clue(next_store[1])}\""
+      interview_menu(store, next_store)
     when "3"
       puts
-      puts "The #{store3.witness} says: \"#{get_clue(next_store3)}\""
-      interview
+      puts "The #{store[2].witness} says: \"#{get_clue(next_store[2])}\""
+      interview_menu(store, next_store)
     when "4"
       player_menu
     else
@@ -112,19 +118,27 @@ class Cli
   def get_clue(store)
     gsc = current_game.game_store_clues.select { |gsc| gsc.store == store }
     gsc[0].clue.text
+
+    #Logic to only sometimes grab a trait clue and append to clue string?
   end
 
   def travel(options)
     puts
     puts "Where would you like to go?"
     puts
-    options.each_with_index do |t, index|
-      puts "#{index + 1}. #{t.name}"
+    if options.size > 1 ## Meaning, you're on the right track!
+      options.each_with_index do |t, index|
+        puts "#{index + 1}. #{t.name}"
+      end
+      puts "#{options.size + 1}. Go Back"
+      puts
+      response = gets.chomp
+    else ## Meaning, you went the wrong way and need to go back
+      puts "Hit any key to back to #{options[0].name}"
+      STDIN.getch
+      print "            \r"
+      response = "1"
     end
-    puts "#{options.size + 1}. Go Back"
-    puts
-
-    response = gets.chomp
 
     case response
     when "1"
@@ -132,48 +146,82 @@ class Cli
       puts "You are now in #{options[0].name}!"
       puts
       current_game.neighborhood = options[0]
+      current_game.current_neighborhood = options[0]
+      ## If you've gone to the correct place, update the game's neighborhood variables
+      if current_game.current_neighborhood == current_game.next_correct_neighborhood
+        update_neighborhoods
+      end
     when "2"
       puts
       puts "You are now in #{options[1].name}!"
       puts
       current_game.neighborhood = options[1]
+      current_game.current_neighborhood = options[1]
+      ## If you've gone to the correct place, update the game's neighborhood variables
+      if current_game.current_neighborhood == current_game.next_correct_neighborhood
+        update_neighborhoods
+      end
     when "3"
       puts
       puts "You are now in #{options[2].name}!"
       puts
       current_game.neighborhood = options[2]
+      current_game.current_neighborhood = options[2]
+      ## If you've gone to the correct place, update the game's neighborhood variables
+      if current_game.current_neighborhood == current_game.next_correct_neighborhood
+        update_neighborhoods
+      end
     when "4"
       puts
       puts "You are now in #{options[3]}.name!"
       puts
       current_game.neighborhood = options[3]
+      current_game.current_neighborhood = options[3]
+      ## If you've gone to the correct place, update the game's neighborhood variables
+      if current_game.current_neighborhood == current_game.next_correct_neighborhood
+        update_neighborhoods
+      end
     when "5"
       player_menu
     else
       puts
       puts "That option is not valid"
-      travel
+      travel(get_travel_options)
     end
 
     player_menu
   end
 
+  def update_neighborhoods
+    index = current_game.neighborhoods.find_index(current_game.next_correct_neighborhood)
+    current_game.last_correct_neighborhood = current_game.current_neighborhood
+    current_game.next_correct_neighborhood = current_game.neighborhoods[index + 1]
+  end
+
   def get_travel_options
     num_choices = 3
-    index = current_game.neighborhoods.find_index(current_game.current_neighborhood)
-    travel_options = []
-    #add next correct neighborhood
-    travel_options << current_game.neighborhoods[index + 1]
-    binding.pry
-    # Get 4 more options from Neighborhood.all that aren't in current_game.neighborhoods
-    while num_choices > 0
-      add_neighborhood = Neighborhood.all[rand(0..9)]
-      if !(current_game.neighborhoods.include?(add_neighborhood) || travel_options.include?(add_neighborhood))
-        travel_options << add_neighborhood
-        num_choices -= 1
-      end
-    end
 
+    # Is current_neighborhood correct? If so, stuff next correct neighborhood into options
+    # Otherwise, stuff last_correct_neighborhood into travel options
+    if current_game.current_neighborhood == current_game.last_correct_neighborhood
+      travel_options = []
+      #add next correct neighborhood
+      travel_options << current_game.next_correct_neighborhood
+
+      # Get 4 more options from Neighborhood.all that aren't in current_game.neighborhoods
+      while num_choices > 0
+        minus_current = Neighborhood.all.reject { |n| n == current_game.current_neighborhood }
+        add_neighborhood = minus_current[rand(0..8)]
+        if !(travel_options.include?(add_neighborhood))
+          travel_options << add_neighborhood
+          num_choices -= 1
+        end
+      end
+    else
+      travel_options = []
+      #add last correct neighborhood
+      travel_options << current_game.last_correct_neighborhood
+    end
     travel_options.shuffle
   end
 

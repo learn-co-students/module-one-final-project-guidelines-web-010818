@@ -205,7 +205,7 @@ Suspect.find_or_create_by( name: "Carmen Sandiego",
   meatpacking.clues << Clue.find_or_create_by(text: "It looked like they were heading near the West Village and Chelsea.")
 
   les.clues << Clue.find_or_create_by(text: "It looked like they were heading to the east side.")
-  les.clues << Clue.find_or_create_by(text: "They said that they wanted to get a pastrami sandwich and refind_or_create_by 'When Harry Met Sally'.")
+  les.clues << Clue.find_or_create_by(text: "They said that they wanted to get a pastrami sandwich like 'When Harry Met Sally'.")
   les.clues << Clue.find_or_create_by(text: "They talked about heading to Russ and Daughters for a bagel.")
   les.clues << Clue.find_or_create_by(text: "I think they are planning on seeing a show at the Mercury Lounge tonight.")
   les.clues << Clue.find_or_create_by(text: "They mentioned taking a tour at the Tenement Museum.")
