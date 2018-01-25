@@ -1,6 +1,13 @@
 class Cli
   attr_accessor :current_user
 
+  STATE_CODES = [ "AK","AL","AR","AS","AZ", "CA","CO","CT","DC", "DE",
+                  "FL","GA","GU","HI","IA","ID","IL","IN","KS","KY",
+                  "LA","MA","MD","ME","MI","MN","MO","MS","MT","NC",
+                  "ND","NE","NH","NJ","NM","NV","NY","OH","OK","OR",
+                  "PA","PR","RI","SC","SD","TN","TX","UT","VA","VI",
+                  "VT","WA","WI","WV","WY"]
+
 
 
   def welcome
@@ -15,10 +22,19 @@ class Cli
   def search_for_venue
     # Search for venue by location
     # get state and city, return list of venues
+    find_venues_by_city
     # pick one and see upcoming events
   end
 
-  def search_for_attraction
+  def search_for_events_by_attraction
+    # search for attraction by keyword
+    attraction_id = get_attractions_by_keyword
+    find_events_for_attraction(attraction_id)
+  end
+
+
+
+  def search_for_attraction_by_genre
     # Search by segment & genre OR keyword
     # return attractions
     # pick one and see upcoming events
@@ -70,19 +86,33 @@ class Cli
   end
 
 
-  def get_input_from_user(string)
+  def get_input_from_user(string, expected_result_array=nil,format_input=nil)
     puts string
-    gets.chomp.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")
+    user_input = gets.chomp.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")
+    if format_input == "upcase"
+      user_input.upcase!
+    end
+    if expected_result_array == nil || expected_result_array.include?(user_input)
+      user_input
+    else
+      get_input_from_user("Input not recognized! Please try again: ")
+    end
   end
 
   def find_venues_by_city
-    state = self.get_input_from_user("Enter a state code.")
+    state = self.get_input_from_user("Enter a state code.", STATE_CODES, "upcase")
     city = self.get_input_from_user("Enter a city.")
     hash = ApiCommunicator.get_type_by_city("venues", state, city)
-    hash.each do |v|
-      find_or_create_venue(v)
+    binding.pry
+    if hash != []
+      hash.each do |v|
+        find_or_create_venue(v)
+      end
+      chosen_venue = choose_by_number(hash,"name")
+    else
+      puts "Nothing found!"
+      find_venues_by_city
     end
-    chosen_venue = choose_by_number(hash,"name")
   end
 
   def puts_events(event_rows)
@@ -158,11 +188,9 @@ class Cli
 
   def choose_by_number(results,parameter) # takes hash of results and data type (attraction, event, etc)
     i = 1
-
     print_array = results.map do |e| #iterates through results, prints with number
       e[parameter]
     end
-
     print_array.uniq.each do |e|
       puts "#{i}. #{e}"
       i += 1
@@ -188,8 +216,7 @@ class Cli
     end
   end
 
-  def find_events_for_attraction
-    attraction_id = get_attraction_id_by_keyword
+  def find_events_for_attraction(attraction_id)
     events = ApiCommunicator.get_events_by_attraction_id(attraction_id)
     newly_added = []
     events.each do |e|
@@ -221,7 +248,6 @@ class Cli
     end
 
     chosen_state = choose_by_number(location_tracker,"state_code")
-
     chosen_state["state_code"] #return state code
   end
 
