@@ -54,6 +54,10 @@ class Table
 
   def display_yelp_reviews(restaurant)
     table(border: true) do
+      row do
+
+      end
+      end
      row header: true do
        column('DATE', width: 10)
        column('USER', width: 10)
