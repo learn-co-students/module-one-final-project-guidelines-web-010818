@@ -1,6 +1,7 @@
 
 #### Helper methods
 
+
 ### Create class instances
 
 STATE_CODES = [ "AK","AL","AR","AS","AZ", "CA","CO","CT","DC", "DE",
@@ -57,24 +58,50 @@ def get_input_from_user(string, expected_result_array=nil,format_input=nil)
   end
 end
 
-def find_venues_by_city
+
+
+def get_state_city_venues
   state = get_input_from_user("Enter a state code.", STATE_CODES, "upcase")
   city = get_input_from_user("Enter a city.")
-  hash = ApiCommunicator.get_type_by_city("venues", state, city)
+  ApiCommunicator.get_type_by_city("venues", state, city)
+end
 
+
+def find_venues_by_city
+  hash = get_state_city_venues
   if hash != []
-    hash.each do |v|
-      find_or_create_venue(v)
-    end
-    chosen_index = choose_by_number(hash,"name")
-    chosen_venue = hash[chosen_index]
+    hash.each { |v| find_or_create_venue(v) }
+    hash
   else
     puts "Nothing found!"
     find_venues_by_city
   end
 end
 
+def choose_venue_from_results(venues_array)
+  puts "Found venues:"
+  chosen_index = choose_by_number(venues_array,"name")
+  chosen_venue = venues_array[chosen_index]
+end
+
+def search_events_by_venue(venue_id)
+  event_results = ApiCommunicator.get_events_by_venue_id(venue_id)
+  created_events = []
+  event_results.each do |event_hash|
+    created_events << find_or_create_event(event_hash)
+  end
+  puts_events(created_events)
+end
+
+def limit_to_twenty(event_rows)
+  if event_rows.size > 20
+    event_rows = event_rows.slice(0..19)
+    puts "Too many events! Returning first 20."
+  end
+end
+
 def puts_events(event_rows)
+  event_rows = limit_to_twenty(event_rows)
   event_rows.each do |event_row|
     name = event_row.name
     venue = Venue.find_by(id:event_row.venue_id)
@@ -182,18 +209,16 @@ end
 
 def choose_by_number(results,parameter) # takes hash of results and data type (attraction, event, etc)
   i = 1
-  print_array = results.map do |e| #iterates through results, prints with number
-    e[parameter]
-  end
+  print_array = results.map { |e| e[parameter] }
   print_array.uniq.each do |e|
     puts "#{i}. #{e}"
     i += 1
   end
-  # gets number from user
   range = (1..i).to_a
   response = get_input_from_user("Please select one of the above by number.",range,"integer")
-  index = response.to_i - 1 # get item index from selected number
-   #return hash for selected data
+
+  response.to_i - 1
+
 end
 
 
@@ -210,7 +235,7 @@ def get_attraction_id_by_keyword
     selected_index = choose_by_number(parsed_results,"name")
     selected_attraction = parsed_results[selected_index]
     find_or_create_attraction(selected_attraction) #adds selected attraction to db
-    attraction_id = selected_attraction["id"]
+    selected_attraction["id"]
   end
 end
 
@@ -220,23 +245,25 @@ def collect_ids_from_array(array_of_hashes)
   end
 end
 
+def create_and_save_events_from_array(array)
+  newly_added = []
+  events.each do |e|
+    new_event = find_or_create_event(e)
+    newly_added << new_event.id
+  end
+  newly_added
+end
+
 def find_events_for_attraction(attraction_id)
   events = ApiCommunicator.get_events_by_attraction_id(attraction_id)
   if !events
     puts "No events found!"
     get_attraction_id_by_keyword
   else
-    newly_added = []
-    events.each do |e|
-      new_event = find_or_create_event(e)
-      newly_added << new_event.id
-    end
+    newly_added = create_and_save_events_from_array(events)
     state_code = filter_events_by_location(newly_added)
-    venues_in_state = Venue.select do |venue|
-      venue.state_code == state_code
-    end
+    venues_in_state = Venue.select { |venue| venue.state_code == state_code}
     venue_ids = collect_ids_from_array(venues_in_state)
-
     found_events = Event.select do |event|
       newly_added.include?(event.id) && venue_ids.include?(event.venue_id)
     end

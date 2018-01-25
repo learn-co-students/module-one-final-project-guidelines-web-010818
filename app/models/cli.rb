@@ -32,20 +32,26 @@ class Cli
 
   def keyword_or_category
     prompt = "Would you like to search by keyword or browse by category?"
-    expected_results = ["Keyword","Category"]
+    expected_results = ["Keyword","Category","Exit"]
     search_input = get_input_from_user(prompt,expected_results)
-    if search_input == "Keyword"
+    case search_input
+    when "Keyword"
       search_for_events_by_attraction
-    elsif search_input == "Category"
+    when "Category"
       search_for_attraction_by_genre
+    when "Exit"
+      exit
     end
   end
 
   def search_for_venue
     # Search for venue by location
     # get state and city, return list of venues
-    get_events_from_venue
-    # pick one and see upcoming events
+    venues_in_city = find_venues_by_city
+    chosen_venue = choose_venue_from_results(venues_in_city)
+    search_events_by_venue(chosen_venue["id"])
+    search_again?
+
 
   end
 
