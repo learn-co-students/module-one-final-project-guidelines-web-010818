@@ -1,6 +1,6 @@
 class ApiCommunicator
   ROUTE = "https://app.ticketmaster.com/discovery/v2/"
-  API_KEY = "&apikey=S5uxjG6W6tVeFpoilslVCFV1QIXTxkxr"
+  API_KEY = "&apikey=oRYEBxPGTbnqXlNBa48Moa1wMhR2FlJl"
 
   def self.get_and_parse(url)
 
@@ -53,7 +53,7 @@ class ApiCommunicator
 
   def self.get_events_by_attraction_id(attraction_id)
     url = "#{ROUTE}events.json?attractionId=#{attraction_id}#{API_KEY}"
-    
+
     #add check to see if there are any results
     self.iterate_through_pages(url, "events")
   end
