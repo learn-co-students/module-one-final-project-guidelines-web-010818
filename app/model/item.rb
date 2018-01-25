@@ -16,13 +16,15 @@ class Item < ActiveRecord::Base
     end
   end
 
+# method not working if no item's found. Have to raise_error.
+
     def self.style(answer, style)
       if style == "1" #Street wear
         new_or_used(answer).where("style = ?", "Street wear")
       elsif style == "2"
         new_or_used(answer).where("style = ?", "Formal")
       elsif style == "3"
-       new_or_used.where("style = ?", "Vintage")
+       new_or_used(answer).where("style = ?", "Vintage")
       elsif style == "4"
        new_or_used(answer).each do |item|
         puts "stock number: #{item.id}, #{item.name}, price: #{item.price} style: #{item.style}\n"

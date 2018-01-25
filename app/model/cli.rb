@@ -74,7 +74,7 @@ class Cli
   end
 
   def main_menu
-    puts "This is MyDrobe main menu\n".colorize(:blue) + "1. Buy\n".colorize(:light_yellow) + "2. Sell\n".colorize(:light_yellow) + "3. Check your balance".colorize(:light_yellow)
+    puts "\nThis is MyDrobe main menu\n".colorize(:blue) + "1. Buy\n".colorize(:light_yellow) + "2. Sell\n".colorize(:light_yellow) + "3. Check your balance\n".colorize(:light_yellow) + "4. Exit".colorize(:light_yellow)
     answer = gets.chomp
     if answer == "1"
       user_buy
@@ -82,12 +82,15 @@ class Cli
       user_sell
     elsif answer == "3"
       check_balance
+    elsif answer == "4"
+      puts "Come back soon! Goodbye".colorize(:blue)
+      exit
     end
   end
 
   def check_balance
     balance = current_user.balance
-    puts "you currently have #{balance} dollars in the account"
+    puts "💰  you currently have #{balance} dollars in the account 💰\n"
     main_menu
   end
 
@@ -95,34 +98,48 @@ class Cli
     puts "Are you interested in checking out:\n".colorize(:blue) + "1. New items.\n".colorize(:light_yellow) + "2. Used items\n".colorize(:light_yellow) + "3. Display all".colorize(:light_yellow)
     user_new_old = gets.chomp
     Item.new_or_used(user_new_old)
+    if user_new_old == "3"
+      user_purchase
+    end
 
-  #  puts "What would you like to do?\n1."
     puts "What style are you looking for?\n".colorize(:blue) + "1. Street wear.\n".colorize(:light_yellow) + "2. Formal\n".colorize(:light_yellow) + "3. Vintage\n".colorize(:light_yellow) + "4. Display all".colorize(:light_yellow)
     user_style = gets.chomp
     Item.style(user_new_old, user_style)
-
+    if user_new_old == "4"
+      user_purchase
+    end
 
     puts "What category are you looking for?\n".colorize(:blue) + "1. Top.\n".colorize(:light_yellow) + "2. Bottom\n".colorize(:light_yellow) + "3. Shoes\n".colorize(:light_yellow) + "4. Display all".colorize(:light_yellow)
     user_category = gets.chomp
     Item.category(user_new_old, user_style, user_category).each do |item|
           puts "stock number: #{item.id}, #{item.name}, price: #{item.price} style: #{item.style} category: #{item.category}\n"
         end
+    user_purchase
 
-    puts "Enter the product number if you wish to purchase the item."
+  end
+
+  def user_purchase
+    puts "Enter the product number if you wish to purchase the item. Enter 0 if you wish to go back".colorize(:blue)
     number = gets.chomp
     purchase_number = number.to_i
 
+    if purchase_number == 0
+      user_buy
+    else
+      purchase_new_or_old
+    end
+  end
+
+  def purchase_new_or_old
     if user_new_old == "1"
       current_user.buy_new_item(purchase_number)
     else
       current_user.buy_used_item(purchase_number)
     end
-
   end
 
 
   def user_sell
-
     puts "Tell us what you want to sell today. (Item name)".colorize(:blue)
     item_name = gets.chomp
 

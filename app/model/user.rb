@@ -38,12 +38,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  # def chosen_item(item_name)
-  #   chosen = Item.all.find_by(item_nam
-  # end
-
-
-
 
 #this is when the user has come to the end of the 'filtering' questions. At this point the user has selected his/her item.
   def buy_new_item(item_id)
@@ -76,14 +70,10 @@ class User < ActiveRecord::Base
     end
   end
 
-
-
-
-    def sell_used_item(name, style, category, size, price)
-      item = Item.create(new:false, name:name, style:style, category:category, size:size, price:price)
-      MarketplaceTransactions.create(user_id: self.id, item_id: item.id, transaction_time: Time.now)
-    end
-
+  def sell_used_item(name, style, category, size, price)
+    item = Item.create(new:false, name:name, style:style, category:category, size:size, price:price)
+    MarketplaceTransactions.create(user_id: self.id, item_id: item.id, transaction_time: Time.now)
+  end
 
 
 end
