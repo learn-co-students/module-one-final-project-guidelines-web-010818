@@ -16,7 +16,7 @@ class Table
        column('3. Search Yelp')
      end
      row do
-       column('4. View All Reviews')
+       column('4. View App Stats')
      end
      row do
        column('5. Logout')

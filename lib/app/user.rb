@@ -108,8 +108,25 @@ class User < ActiveRecord::Base
   end
 
   def get_information_and_create_review_for_existing_meal(restaurant)
-    puts "Please enter meal rating:"
-    rating = gets.chomp
+    rating = nil
+
+    #  until input.is_a?(Fixnum) do
+    #   print "Please enter a number: "
+    #   begin
+    #     input = Integer(gets)
+    #   rescue ArgumentError # calling Integer with a string argument raises this
+    #     input = nil        # explicitly reset input so the loop is re-entered
+    #   end
+    # end
+    until rating.is_a?(Fixnum) && rating.between?(1, 5)
+      puts "Please enter meal rating (1-2-3-4-5):"
+      begin
+        rating = Integer(gets)
+      rescue ArgumentError
+        rating = nil
+      end
+    end
+
     puts "Please enter review:"
     content = gets.chomp
     self.add_review_for_existing_meal(meal: meal, rating: rating, content: content)
@@ -118,8 +135,12 @@ class User < ActiveRecord::Base
   def get_information_and_create_review_for_new_meal(restaurant)
     puts "Please enter meal name:"
     meal_name = gets.chomp
-    puts "Please enter meal rating:"
-    rating = gets.chomp
+    rating = 0
+    until rating.between?(1, 5) && rating.class == Fixnum
+      binding.pry
+      puts "Please enter meal rating (1-2-3-4-5):"
+      rating = gets.chomp.to_i
+    end
     puts "Please enter review:"
     content = gets.chomp
     self.add_review_for_new_meal(meal_name: meal_name, restaurant: restaurant, rating: rating, content: content)
