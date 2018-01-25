@@ -351,7 +351,9 @@ class Cli
   end
 
   def current_list_of_suspects
-    active_suspects = Suspect.all
+    active_suspects = []
+    Suspect.all.each {|s| active_suspects << s}
+    binding.pry
     evidence = Evidence.find_or_create_by(game_id: current_game.id)
     suspect_hash = evidence.attributes.select {|k,v| v != nil}
     suspect_hash.delete("id")
