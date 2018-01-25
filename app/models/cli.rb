@@ -1,15 +1,6 @@
 class Cli
   attr_accessor :current_user
 
-  STATE_CODES = [ "AK","AL","AR","AS","AZ", "CA","CO","CT","DC", "DE",
-                  "FL","GA","GU","HI","IA","ID","IL","IN","KS","KY",
-                  "LA","MA","MD","ME","MI","MN","MO","MS","MT","NC",
-                  "ND","NE","NH","NJ","NM","NV","NY","OH","OK","OR",
-                  "PA","PR","RI","SC","SD","TN","TX","UT","VA","VI",
-                  "VT","WA","WI","WV","WY"]
-
-
-
   def welcome
     puts "Hello!"
     venue_or_event
@@ -53,8 +44,11 @@ class Cli
   def search_for_venue
     # Search for venue by location
     # get state and city, return list of venues
-    get_events_from_venue
-    # pick one and see upcoming events
+    venues_in_city = find_venues_by_city
+    chosen_venue = choose_venue_from_results(venues_in_city)
+    search_events_by_venue(chosen_venue["id"])
+    search_again?
+
 
   end
 

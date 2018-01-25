@@ -1,6 +1,13 @@
 
 #### Helper methods
 
+STATE_CODES = [ "AK","AL","AR","AS","AZ", "CA","CO","CT","DC", "DE",
+                "FL","GA","GU","HI","IA","ID","IL","IN","KS","KY",
+                "LA","MA","MD","ME","MI","MN","MO","MS","MT","NC",
+                "ND","NE","NH","NJ","NM","NV","NY","OH","OK","OR",
+                "PA","PR","RI","SC","SD","TN","TX","UT","VA","VI",
+                "VT","WA","WI","WV","WY"]
+
 ### Create class instances
 
 def find_or_create_event(event_result_hash)
@@ -49,23 +56,41 @@ def get_input_from_user(string, expected_result_array=nil,format_input=nil)
 end
 
 def find_venues_by_city
-  state = self.get_input_from_user("Enter a state code.", STATE_CODES, "upcase")
-  city = self.get_input_from_user("Enter a city.")
+  state = get_input_from_user("Enter a state code.", STATE_CODES, "upcase")
+  city = get_input_from_user("Enter a city.")
   hash = ApiCommunicator.get_type_by_city("venues", state, city)
 
   if hash != []
     hash.each do |v|
       find_or_create_venue(v)
     end
-    chosen_index = choose_by_number(hash,"name")
-    chosen_venue = hash[chosen_index]
+    hash
   else
     puts "Nothing found!"
     find_venues_by_city
   end
 end
 
+def choose_venue_from_results(venues_array)
+  puts "Found venues:"
+  chosen_index = choose_by_number(venues_array,"name")
+  chosen_venue = venues_array[chosen_index]
+end
+
+def search_events_by_venue(venue_id)
+  event_results = ApiCommunicator.get_events_by_venue_id(venue_id)
+  created_events = []
+  event_results.each do |event_hash|
+    created_events << find_or_create_event(event_hash)
+  end
+  puts_events(created_events)
+end
+
 def puts_events(event_rows)
+  if event_rows.size > 20
+    event_rows = event_rows.slice(0..19)
+    puts "Too many events! Returning first 20."
+  end
   event_rows.each do |event_row|
     name = event_row.name
     venue = Venue.find_by(id:event_row.venue_id)
@@ -98,7 +123,7 @@ def get_attractions_from_segment(segment)
     i += 1
   end
 
-  response = self.get_input_from_user("Please select one of the above by number.")
+  response = get_input_from_user("Please select one of the above by number.")
 
   index = response.to_i - 1
   selected_genre = hash['segment']["_embedded"]["genres"][index]
@@ -106,7 +131,7 @@ def get_attractions_from_segment(segment)
   attractions = ApiCommunicator.get_attractions_by_genre_id(genre_id)
 
   attractions.each do |a|
-    self.find_or_create_attraction(a)
+    find_or_create_attraction(a)
   end
 
   attractions
@@ -114,8 +139,8 @@ end
 
 def filter_attractions_by_location(attractions_array)
 
-  state = self.get_input_from_user("Enter a state code.")
-  city = self.get_input_from_user("Enter a city.")
+  state = get_input_from_user("Enter a state code.")
+  city = get_input_from_user("Enter a city.")
   venue_hash = ApiCommunicator.get_type_by_city("venues", state, city)
   venue_hash.each do |v|
     new_venue = Venue.find_or_create_by(id:v['id']) do |venue|
@@ -169,9 +194,9 @@ end
 def find_genres_for_segment
   puts "These are the available segments:"
   #segments to more "normal" term?
-  self.put_segment_options
-  segment = self.get_input_from_user("Enter a segment.")
-  attractions_array = self.get_attractions_from_segment(segment)
+  put_segment_options
+  segment = get_input_from_user("Enter a segment.")
+  attractions_array = get_attractions_from_segment(segment)
   filter_attractions_by_location(attractions_array)
 end
 
@@ -188,7 +213,7 @@ def choose_by_number(results,parameter) # takes hash of results and data type (a
   end
   # gets number from user
   range = (1..i).to_a
-  response = self.get_input_from_user("Please select one of the above by number.",range,"integer")
+  response = get_input_from_user("Please select one of the above by number.",range,"integer")
   index = response.to_i - 1 # get item index from selected number
    #return hash for selected data
 end
@@ -197,7 +222,7 @@ end
 
 def get_attraction_id_by_keyword
   #get attractions by keyword
-  keyword = self.get_input_from_user("Enter a keyword to search for.")
+  keyword = get_input_from_user("Enter a keyword to search for.")
   parsed_results = ApiCommunicator.get_attractions_by_keyword(keyword)
   if !parsed_results
     puts "Not found!"
