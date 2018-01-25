@@ -28,7 +28,7 @@ class Cli
 
   def search_for_events_by_attraction
     # search for attraction by keyword
-    attraction_id = get_attractions_by_keyword
+    attraction_id = get_attraction_id_by_keyword
     find_events_for_attraction(attraction_id)
   end
 
@@ -108,7 +108,8 @@ class Cli
       hash.each do |v|
         find_or_create_venue(v)
       end
-      chosen_venue = choose_by_number(hash,"name")
+      chosen_index = choose_by_number(hash,"name")
+      chosen_venue = hash[chosen_index]
     else
       puts "Nothing found!"
       find_venues_by_city
@@ -198,16 +199,22 @@ class Cli
     # gets number from user
     response = self.get_input_from_user("Please select one of the above by number.")
     index = response.to_i - 1 # get item index from selected number
-    selected = results[index] #return hash for selected data
+     #return hash for selected data
   end
 
   def get_attraction_id_by_keyword
     #get attractions by keyword
     keyword = self.get_input_from_user("Enter a keyword to search for.")
     parsed_results = ApiCommunicator.get_attractions_by_keyword(keyword)
-    selected_attraction = choose_by_number(parsed_results,"name")
-    find_or_create_attraction(selected_attraction) #adds selected attraction to db
-    attraction_id = selected_attraction["id"]
+    if !parsed_results
+      puts "Not found!"
+      get_attraction_id_by_keyword
+    else
+      selected_index = choose_by_number(parsed_results,"name")
+      selected_attraction = parsed_results[selected_index]
+      find_or_create_attraction(selected_attraction) #adds selected attraction to db
+      attraction_id = selected_attraction["id"]
+    end
   end
 
   def collect_ids_from_array(array_of_hashes)
@@ -218,20 +225,26 @@ class Cli
 
   def find_events_for_attraction(attraction_id)
     events = ApiCommunicator.get_events_by_attraction_id(attraction_id)
-    newly_added = []
-    events.each do |e|
-      new_event = find_or_create_event(e)
-      newly_added << new_event.id
+    if !events
+      puts "No events found!"
+      get_attraction_id_by_keyword
+    else
+      newly_added = []
+      events.each do |e|
+        new_event = find_or_create_event(e)
+        newly_added << new_event.id
+      end
+      state_code = filter_events_by_location(newly_added)
+      venues_in_state = Venue.select do |venue|
+        venue.state_code == state_code
+      end
+      venue_ids = collect_ids_from_array(venues_in_state)
+      found_events = Event.select do |event|
+        event.attraction_id == attraction_id && venue_ids.include?(event.venue_id)
+      end
+      binding.pry
+      puts_events(found_events)
     end
-    state_code = filter_events_by_location(newly_added)
-    venues_in_state = Venue.select do |venue|
-      venue.state_code == state_code
-    end
-    venue_ids = collect_ids_from_array(venues_in_state)
-    found_events = Event.select do |event|
-      event.attraction_id == attraction_id && venue_ids.include?(event.venue_id)
-    end
-    puts_events(found_events)
   end
 
 
@@ -247,8 +260,13 @@ class Cli
       end
     end
 
-    chosen_state = choose_by_number(location_tracker,"state_code")
-    chosen_state["state_code"] #return state code
+    chosen_index = choose_by_number(location_tracker,"state_code")
+    location_codes = location_tracker.map do |venue|
+      venue["state_code"]
+    end
+
+    chosen_state = location_codes.uniq[chosen_index]
+    chosen_state #return state code
   end
 
   # def filter_event_results(event_results)
