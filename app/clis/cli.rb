@@ -25,7 +25,7 @@ class Cli
     while name == nil
       user_name = gets.chomp.downcase
       if user_name == "exit"
-        exit
+        exit_app
       else
         self.current_user = User.find_or_create_by(name: name)  #user instance
         name = user_name
@@ -46,7 +46,7 @@ class Cli
         choice = user_input
         WorkoutCli.run
       elsif user_input == "exit"
-        exit
+        exit_app
       else
         puts "Choose MIND or BODY"
       end
@@ -54,6 +54,10 @@ class Cli
   end
 
 
+  def self.exit_app
+    puts "Goodbye! Hope you are more relaxed :) "
+    exit
+  end
 
   def self.run
     current_user = Cli.new

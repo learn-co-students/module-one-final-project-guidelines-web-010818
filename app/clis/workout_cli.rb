@@ -10,7 +10,7 @@ class WorkoutCli
     puts "Which muscle would you like to stretch?"
     MuscleGroup.display_all_mg
     users_choice = nil
-    numbers = "123456789"
+    numbers = "12345678910"
     while users_choice == nil
       user_mg_id = gets.chomp
       if numbers.include?(user_mg_id)
@@ -51,27 +51,16 @@ class WorkoutCli
   end
 
   def run_current_session
-      self.current_workout.each do |stretch|
-        puts “#{stretch.name}”
-        stretch.display_stretch_picture
-        puts “#{stretch.instructions}”
-        sleep stretch.time_in_sec
-      end
-    end
-
-
-
-  def run_current_session
     self.current_workout.each do |stretch|
       puts "#{stretch.name.upcase}"
       stretch.display_stretch_picture
       puts "#{stretch.instructions}"
-      sleep 3
+      sleep 5
       # sleep stretch.time_in_sec
-      puts "--------------------------------------------------------------------------------------------------"
+      puts "-----------------------------------------GOOD JOB!----------------------------------------------"
       puts " "
     end
-    puts "-----END OF WORKOUT -----"
+      puts "--------------------------------------END OF WORKOUT--------------------------------------------"
   end
 
   def star_favorite_stretch
@@ -87,7 +76,7 @@ class WorkoutCli
 
   def self.run
     current_session = WorkoutCli.new
-    while current_session.current_workout.length < 2
+    while current_session.current_workout.length < 5
       user_input_mg_id = current_session.choose_mg_id
       user_input_stretch_id = current_session.choose_stretch_by_mg_id(user_input_mg_id)
       current_session.add_stretch_to_current_workout_by_stretch_id(user_input_stretch_id)
