@@ -32,12 +32,15 @@ class Cli
 
   def keyword_or_category
     prompt = "Would you like to search by keyword or browse by category?"
-    expected_results = ["Keyword","Category"]
+    expected_results = ["Keyword","Category","Exit"]
     search_input = get_input_from_user(prompt,expected_results)
-    if search_input == "Keyword"
+    case search_input
+    when "Keyword"
       search_for_events_by_attraction
-    elsif search_input == "Category"
+    when "Category"
       search_for_attraction_by_genre
+    when "Exit"
+      exit
     end
   end
 
