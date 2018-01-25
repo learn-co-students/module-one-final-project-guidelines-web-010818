@@ -12,8 +12,8 @@ class Cli
 
   def find_or_create_user
     puts "Enter your name to start:"
-    name = gets.chomp
-    self.current_user = User.find_or_create_by(name: name.downcase)  #user instance
+    name = gets.chomp.downcase
+    self.current_user = User.find_or_create_by(name: name)  #user instance
   end
 
   def choose_mind_or_body

@@ -49,6 +49,7 @@ class WorkoutCli
     end
     user_fav_stretch_id = gets.chomp.to_i
     Stretch.find_and_add_star_count_by_stretch_id(user_fav_stretch_id)
+    #save favorites to fav table
   end
 
   def self.run

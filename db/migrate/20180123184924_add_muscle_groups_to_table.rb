@@ -8,6 +8,5 @@ class AddMuscleGroupsToTable < ActiveRecord::Migration[5.0]
     MuscleGroup.create(name: "Feet")
     MuscleGroup.create(name: "Hips")
     MuscleGroup.create(name: "Legs")
-    MuscleGroup.create(name: "Face")
   end
 end

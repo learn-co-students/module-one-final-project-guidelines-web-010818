@@ -1,18 +1,16 @@
 class Stretch < ActiveRecord::Base
+  has_many :favorites
+  has_many :users, through: :favorites
+
   has_many :stretch_muscle_groups
   has_many :muscle_groups, through: :stretch_muscle_groups
-  has_many :workout_stretches
-  has_many :workouts, through: :workout_stretches
   #mg = muscle_group
 
   def self.find_stretches_by_mg_id(mg_id)
     relationships = StretchMuscleGroup.where("muscle_group_id = ?", mg_id)
-    stretches_arr = []
-    relationships.each do |stretch_mg|
-      stretch = Stretch.find(stretch_mg.stretch_id)
-      stretches_arr << stretch
+    relationships.map do |stretch_mg|
+       stretch = Stretch.find(stretch_mg.stretch_id)
     end
-    stretches_arr
   end
 
   def self.find_stretch_by_id(id)

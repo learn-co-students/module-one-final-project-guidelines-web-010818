@@ -1,18 +1,21 @@
 class User < ActiveRecord::Base
-  has_many :user_muscle_groups
-  has_many :muscle_groups, through: :user_muscle_groups
-
-  has_many :user_workouts
-  has_many :workouts, through: :user_workouts
+  has_many :favorites
+  has_many :stretches, through: :favorites
 
 
-  def star_fav_stretch(stretch_id)
-    Favorite.new(user_id: self.id, stretch_id: stretch_id)
-    fav_stretch = Stretch.find(stretch_id)
-    fav_stretch.stars_count += 1
+  def save_fav_stretch_by_stretch_id(id)
+    Favorite.create(user_id: self.id, stretch_id: id)
   end
 
 
+
+  def display_fav_stretches
+    relationships = Favorite.where("user_id = ?", self.id)
+    relationships.map do |user_stretch|
+       stretch = Stretch.find(user_stretch.stretch_id)
+       "#{stretch.id}. #{stretch.name}"
+    end
+  end
 
 
 
