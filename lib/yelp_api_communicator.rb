@@ -1,46 +1,5 @@
 # YELP FUSION API TUTORIAL CODE SOURCE:
 # https://github.com/Yelp/yelp-fusion/tree/master/fusion/ruby
-#
-# Make a request to the Fusion search endpoint. Full documentation is online at:
-# https://www.yelp.com/developers/documentation/v3/business_search
-#
-# term - search term used to find businesses
-# location - what geographic location the search should happen
-#
-# Examples
-#
-#   search("burrito", "san francisco")
-#   # => {
-#          "total": 1000000,
-#          "businesses": [
-#            "name": "El Farolito"
-#            ...
-#          ]
-#        }
-#
-#   search("sea food", "Seattle")
-#   # => {
-#          "total": 1432,
-#          "businesses": [
-#            "name": "Taylor Shellfish Farms"
-#            ...
-#          ]
-#        }
-#
-# Returns a parsed json object of the request
-# API_KEY = '4EBJY8ivWTcB1SRXIXZ1hQXqE14y4HqOYwpGTo1zgly-_oTa9wNahyobVvj3hM2Rv-3_vmMWon_QTun3WMSVZ4BQKkvz804kjC3eh51pKiIpWqEZQuhIn-TENVVmWnYx'
-#
-#
-# # Constants, do not change these
-# API_HOST = "https://api.yelp.com"
-# SEARCH_PATH = "/v3/businesses/search"
-# BUSINESS_PATH = "/v3/businesses/"  # trailing / because we append the business id to the path
-#
-#
-# DEFAULT_BUSINESS_ID = "yelp-san-francisco"
-# DEFAULT_TERM = "dinner"
-# DEFAULT_LOCATION = "New York, NY"
-# SEARCH_LIMIT = 5
 
 def search(term, location="new york")
   url = "#{API_HOST}#{SEARCH_PATH}"
@@ -70,30 +29,3 @@ end
 #     puts "\n"
 #   end
 # end
-#
-#
-# business_id = "yelp-san-francisco"
-# def business(business_id)
-#   url = "#{API_HOST}#{BUSINESS_PATH}#{business_id}"
-#
-#   response = HTTP.auth("Bearer #{API_KEY}").get(url)
-#   response.parse
-# end
-#
-# def business_reviews(business_id)
-#   url = "#{API_HOST}#{BUSINESS_PATH}#{business_id}/reviews"
-#
-#   response = HTTP.auth("Bearer #{API_KEY}").get(url)
-#   response.parse
-# end
-#
-# reviews = business_reviews(business_id)["reviews"]
-# reviews.each do |review|
-#   puts review["text"]
-#   puts review["user"]["name"]
-#   puts "\n"
-# end
-#
-# binding.pry
-#
-# puts reviews

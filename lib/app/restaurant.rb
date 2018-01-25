@@ -4,15 +4,15 @@ class Restaurant < ActiveRecord::Base
   has_many :favorites
   has_many :users, through: :favorites
 
-  def display_restaurant_info
-    puts " #{self.name}"
-    puts "\tAddress: #{self.address}"
-    puts "\tPhone Number: #{self.phone_number}"
-    puts "\tYelp Rating: #{self.yelp_rating}"
-    puts "\tYelp Review Count: #{self.yelp_review_count}"
-    puts "\tMealPal Rating: #{self.mealpal_rating}"
-    puts "\tMealPal Review Count: #{self.reviews.size}"
-  end
+  # def display_restaurant_info
+  #   puts " #{self.name}"
+  #   puts "\tAddress: #{self.address}"
+  #   puts "\tPhone Number: #{self.phone_number}"
+  #   puts "\tYelp Rating: #{self.yelp_rating}"
+  #   puts "\tYelp Review Count: #{self.yelp_review_count}"
+  #   puts "\tMealPal Rating: #{self.mealpal_rating}"
+  #   puts "\tMealPal Review Count: #{self.reviews.size}"
+  # end
 
   def display_meals
     self.meals.each_with_index do |meal, index|
@@ -21,8 +21,6 @@ class Restaurant < ActiveRecord::Base
   end
 
   def reviews
-    # meals --> self.meals
-    # Review.all where meal_id = meal.id
     self.meals.map do |meal|
       meal.reviews.map do |review|
         review
@@ -45,25 +43,25 @@ class Restaurant < ActiveRecord::Base
     YelpApiAdapter.get_reviews_and_parse(self.yelp_id)
   end
 
-  def display_yelp_reviews
-    yelp_reviews = self.get_yelp_reviews
-    yelp_reviews.each do |yelp_review|
-      puts "Name: #{yelp_review["name"]}"
-      puts "Rating: #{yelp_review["rating"]}"
-      puts "Date: #{yelp_review["date"]}"
-      puts "Text: #{yelp_review["text"]}"
-    end
-  end
+  # def display_yelp_reviews
+  #   yelp_reviews = self.get_yelp_reviews
+  #   yelp_reviews.each do |yelp_review|
+  #     puts "Name: #{yelp_review["name"]}"
+  #     puts "Rating: #{yelp_review["rating"]}"
+  #     puts "Date: #{yelp_review["date"]}"
+  #     puts "Text: #{yelp_review["text"]}"
+  #   end
+  # end
 
-  def display_mealpal_reviews
-    meal_pal_reviews = self.reviews
-    meal_pal_reviews.each do |meal_pal_review|
-      puts "Name: #{meal_pal_review.user.name}"
-      puts "Rating: #{meal_pal_review.rating}"
-      puts "Date: #{meal_pal_review.date}"
-      puts "Text: #{meal_pal_review.content}"
-    end
-  end
+  # def display_mealpal_reviews
+  #   meal_pal_reviews = self.reviews
+  #   meal_pal_reviews.each do |meal_pal_review|
+  #     puts "Name: #{meal_pal_review.user.name}"
+  #     puts "Rating: #{meal_pal_review.rating}"
+  #     puts "Date: #{meal_pal_review.date}"
+  #     puts "Text: #{meal_pal_review.content}"
+  #   end
+  # end
 
   def average_mealpal_review
     review_ratings = self.reviews.map do |review|

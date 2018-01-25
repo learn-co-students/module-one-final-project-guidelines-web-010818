@@ -9,3 +9,4 @@ gem "http"
 gem "rake"
 gem "sinatra"
 gem "byebug"
+gem 'command_line_reporter', '>=3.0'

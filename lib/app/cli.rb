@@ -32,7 +32,7 @@ class Cli < CliMethods
 
   def login
     puts "Please enter your username: "
-    username = gets.chomp.split(" ").each{|w| w.capitalize}.join(" ")
+    username = gets.chomp.split(" ").map{|w| w.capitalize}.join(" ")
     self.current_user = User.find_by(name: username)
   end
 
@@ -73,19 +73,14 @@ class Cli < CliMethods
   end
 
   def display_menu_options
-    puts "1. View Your Past Meals and Reviews"
-    puts "2. Enter a New Review"
-    puts "3. Search Yelp"
-    puts "4. View All Reviews"
-    puts "5. Change User"
-    puts "6. Exit"
+
+    Table.new.display_menu_options
     input = gets.chomp.to_i
 
     case input
     when 1
-      self.current_user.display_user_info
-      self.current_user.print_user_reviews
-      display_menu_options
+      Table.new.display_user_info(self.current_user)
+      Table.new.display_user_reviews(self.current_user)
     when 2
       puts "Please enter restaurant name:"
       input = gets.chomp
@@ -121,15 +116,13 @@ class Cli < CliMethods
       input = gets.chomp
       restaurants = YelpApiAdapter.user_search_and_display(input, self.current_user.location)
 
-      binding.pry
-
       if restaurants
         puts "Please select restaurant (1-5):"
         input = gets.chomp.to_i
         restaurant = self.current_user.select_restaurant(restaurants, input)
         restaurant = Restaurant.find_or_create_by_instance(restaurant)
-        restaurant.display_yelp_reviews
-        restaurant.display_mealpal_reviews
+        Table.new.display_yelp_reviews
+        Table.new.display_mealpal_reviews
         # refactor to have method to add review
         puts "Enter 1 to return to main menu"
         input = gets.chomp.to_i

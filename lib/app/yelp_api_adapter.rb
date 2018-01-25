@@ -135,7 +135,8 @@ class YelpApiAdapter
     parsed_array = self.search_and_parse(input, location)
     if parsed_array
       instance_array = self.create_restaurant_instance_array(parsed_array)
-      self.display_search_options(instance_array)
+      Table.new.display_restaurants(instance_array)
+      instance_array
     else
       nil
     end

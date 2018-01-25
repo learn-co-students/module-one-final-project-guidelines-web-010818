@@ -4,6 +4,7 @@ require "http"
 require "optparse"
 require "pry"
 require "date"
+require "command_line_reporter"
 Bundler.require
 
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/development.db')
