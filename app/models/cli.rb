@@ -212,18 +212,6 @@ class Cli
   end
 
 
-  def find_or_create_event(event_result_hash)
-    new_event = Event.find_or_create_by(id:event_result_hash["id"]) do |event|
-      event.name = event_result_hash['name']
-      event.venue_id = event_result_hash['_embedded']['venues'][0]['id']
-      event.attraction_id = event_result_hash['_embedded']['attractions'][0]['id']
-      if event_result_hash['dates']['start']['dateTime']
-        event.dateTime = event_result_hash['dates']['start']['dateTime']
-      end
-    end
-    new_event
-
-  end
 
 
 
