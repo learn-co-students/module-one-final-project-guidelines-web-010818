@@ -1,7 +1,7 @@
 require 'io/console'
 
 class Cli
-  attr_accessor :current_game
+  attr_accessor :current_game, :hours
 
   def welcome
     puts
@@ -9,6 +9,7 @@ class Cli
     p1 = find_or_create_player(player_name_getter)
     new_game = Game.create()
     self.current_game = new_game
+    self.hours = 12.0
     p1.games << new_game
     new_game.generate_new_game_data
     start_game
@@ -32,7 +33,7 @@ class Cli
     puts
     puts "A horrible crime has occurred!!"
     puts "The suspect was seen leaving the bank and it's your job to track them down!"
-    puts "You will have 24 hours to apprehend the criminal."
+    puts "You will have 12 hours to apprehend the criminal."
     puts
     player_menu
   end
@@ -94,14 +95,17 @@ class Cli
 
     case response
     when "1"
+      time_clock(0.5)
       puts
       puts "The #{store[0].witness} says: \"#{get_clue(next_store[0])}\""
       interview_menu(store, next_store)
     when "2"
+      time_clock(0.5)
       puts
       puts "The #{store[1].witness} says: \"#{get_clue(next_store[1])}\""
       interview_menu(store, next_store)
     when "3"
+      time_clock(0.5)
       puts
       puts "The #{store[2].witness} says: \"#{get_clue(next_store[2])}\""
       interview_menu(store, next_store)
@@ -145,8 +149,11 @@ class Cli
 
     case response
     when "1"
+      time_clock(1)
       puts
       puts "You are now in #{options[0].name}!"
+      puts
+      puts "Hours Remaining: #{self.hours}"
       puts
       current_game.neighborhood = options[0]
       current_game.current_neighborhood = options[0]
@@ -155,8 +162,11 @@ class Cli
         update_neighborhoods
       end
     when "2"
+      time_clock(1)
       puts
       puts "You are now in #{options[1].name}!"
+      puts
+      puts "Hours Remaining: #{self.hours}"
       puts
       current_game.neighborhood = options[1]
       current_game.current_neighborhood = options[1]
@@ -165,8 +175,11 @@ class Cli
         update_neighborhoods
       end
     when "3"
+      time_clock(1)
       puts
       puts "You are now in #{options[2].name}!"
+      puts
+      puts "Hours Remaining: #{self.hours}"
       puts
       current_game.neighborhood = options[2]
       current_game.current_neighborhood = options[2]
@@ -175,8 +188,11 @@ class Cli
         update_neighborhoods
       end
     when "4"
+      time_clock(1)
       puts
       puts "You are now in #{options[3]}.name!"
+      puts
+      puts "Hours Remaining: #{self.hours}"
       puts
       current_game.neighborhood = options[3]
       current_game.current_neighborhood = options[3]
@@ -244,7 +260,7 @@ class Cli
     when "1"
       evidence_recorder
     when "2"
-      current_list_of_suspects
+      henchmen_details(current_list_of_suspects)
     when "3"
       player_menu
     else
@@ -308,8 +324,8 @@ class Cli
 
   def current_list_of_suspects
     active_suspects = Suspect.all
-    game_suspect = Evidence.all.select {|s| s.game = current_game}
-    suspect_hash = game_suspect.last.attributes.select {|k,v| v != nil}
+    evidence = Evidence.find_or_create_by(game_id: current_game.id)
+    suspect_hash = evidence.attributes.select {|k,v| v != nil}
     suspect_hash.delete("id")
     suspect_hash.delete("game_id")
     suspect_hash.each do |k,v|
@@ -323,7 +339,7 @@ class Cli
     puts "Here are the suspects that match your clues:"
     puts
     active_suspects.each_with_index {|s,i| puts "#{i + 1}. #{s.name}"}
-    henchmen_details(active_suspects)
+    active_suspects
   end
 
   def henchmen_details(henchmen_array)
@@ -350,6 +366,59 @@ class Cli
       puts
       puts "That option is not valid"
       evidence_recorder
+    end
+  end
+
+  def issue_warrant
+    puts
+    puts "You should have enough intel to issue a warrant. Here are the remaining suspects:"
+    current_list_of_suspects
+    puts
+    puts "Which suspect would you like to arrest?"
+    response = gets.chomp
+    if current_list_of_suspects[response.to_i - 1] == current_game.suspect
+      win
+    else
+      lose_by_suspect(current_list_of_suspects[response.to_i - 1])
+    end
+  end
+
+  def win
+    puts
+    puts "Congrats! You've tracked down #{current_game.suspect.name} and solved the case. Great work Officer #{current_game.player.name}. But wait, we just recieved word of another burglary. New York City needs you, are you up to the challenge?"
+    play_again
+  end
+
+  def lose_by_suspect(suspect)
+    puts
+    puts "You arrested the wrong person! #{suspect.name} has a solid alibi and now we'll never solve the crime. Would you like to try to redeem yourself with a new case?"
+    play_again
+  end
+
+  def play_again
+    puts
+    puts "Would you like to play again?"
+    puts
+    puts "1. I'm on the case!"
+    puts "2. I'm off duty."
+    response = gets.chomp
+    case response
+    when "1"
+      welcome
+    else
+      puts
+      puts "See you later!"
+      puts
+      exit
+    end
+  end
+
+  def time_clock(time)
+    self.hours -= time
+    if self.hours <= 0.0
+      puts
+      puts "You've run out of time!"
+      issue_warrant
     end
   end
 
