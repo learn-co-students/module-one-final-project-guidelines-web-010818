@@ -1,13 +1,13 @@
 class Table
   include CommandLineReporter
 
-  def display_menu_options
+  def display_main_menu
     table(border: true) do
      row header: true do
        column('MEALPAL RATINGS APP', width: 50)
      end
      row do
-       column('1. View Your View Your Past Meals and Reviews', align: 'left')
+       column('1. View Your View Your Past Meals and Reviews')
      end
      row do
        column('2. Enter a New Review')
@@ -23,6 +23,29 @@ class Table
      end
      row do
        column('6. Exit')
+     end
+   end
+  end
+
+  def display_stats_menu
+    table(border: true) do
+     row header: true do
+       column('MEALPAL RATINGS APP STATS', width: 50)
+     end
+     row do
+       column('1. Top 10 Restaurants by Yelp Rating')
+     end
+     row do
+       column('2. Top 10 Restaurants by Mealpal Rating')
+     end
+     row do
+       column('3. Most Active Users')
+     end
+     row do
+       column('4. Most Critical Users')
+     end
+     row do
+       column('5. Kindest Users')
      end
    end
   end
@@ -54,10 +77,6 @@ class Table
 
   def display_yelp_reviews(restaurant)
     table(border: true) do
-      row do
-
-      end
-      end
      row header: true do
        column('DATE', width: 10)
        column('USER', width: 10)
@@ -174,6 +193,5 @@ class Table
       end
     end
   end
-
 
 end

@@ -74,7 +74,7 @@ class Cli < CliMethods
 
   def display_menu_options
 
-    Table.new.display_menu_options
+    Table.new.display_main_menu
     input = gets.chomp.to_i
 
     case input
@@ -135,8 +135,22 @@ class Cli < CliMethods
         display_menu_options
         #call method to start review process again here
       end
-      
+
     when 4
+      Table.new.display_stats_menu
+      input = gets.chomp.to_i
+
+      case input
+      when 1
+      when 2
+      when 3
+      when 4
+      when 5
+
+      else
+        puts "Input a correct number"
+      end
+
 
     when 5
 
