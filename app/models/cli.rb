@@ -242,7 +242,7 @@ class Cli
     trait_options = Suspect.all.map {|s| s[trait]}.uniq
     trait_options.each_with_index {|t, i| puts "#{i + 1}. #{t.capitalize}"}
     clue_response = STDIN.gets.chomp
-    guess = Evidence.find_or_create_by(game: current_game)
+    guess = Evidence.find_or_create_by(game_id: current_game.id)
     if clue_response.to_i.to_s == clue_response && clue_response.to_i <= trait_options.length
       guess[trait] = trait_options[clue_response.to_i - 1]
       guess.save
@@ -256,7 +256,50 @@ class Cli
   end
 
   def current_list_of_suspects
-    Suspect.all.collect {|s| puts "#{s.id} #{s.name}"}
-    record_evidence
+    active_suspects = Suspect.all
+    game_suspect = Evidence.all.select {|s| s.game = current_game}
+    suspect_hash = game_suspect.last.attributes.select {|k,v| v != nil}
+    suspect_hash.delete("id")
+    suspect_hash.delete("game_id")
+    suspect_hash.each do |k,v|
+      Suspect.all.each do |s|
+        if s[k] != v
+          active_suspects.delete(s)
+        end
+      end
+    end
+    puts
+    puts "Here are the suspects that match your clues:"
+    puts
+    active_suspects.each_with_index {|s,i| puts "#{i + 1}. #{s.name}"}
+    henchmen_details(active_suspects)
   end
+
+  def henchmen_details(henchmen_array)
+    puts
+    puts "Would you like see details about each possible suspect?"
+    puts
+    puts "1. Look at suspect details"
+    puts "2. Go back"
+    response = gets.chomp
+    case response
+    when "1"
+      puts
+      puts "Which suspect would you like?"
+      henchmen_array.each_with_index {|h,i| puts "#{i + 1}. #{h.name}"}
+      detail_response = gets.chomp
+      henchman = henchmen_array[detail_response.to_i - 1].attributes
+      puts
+      henchman.delete("id")
+      henchman.each {|k,v| puts "#{k}: #{v}"}
+      henchmen_details(henchmen_array)
+    when "2"
+      record_evidence
+    else
+      puts
+      puts "That option is not valid"
+      evidence_recorder
+    end
+  end
+
 end
