@@ -7,13 +7,16 @@ class Workout < ActiveRecord::Base
 
 
   def self.current_workout_id
-    search_name = "#{@@current_user.name}'s workout"
-    current_workout = self.where("name = ?", search_name)
+    current_workout = WorkoutStretch.where()
+    where self.id == WorkoutStretch.workout_id
+
+
+    self.where("name = ?", "workout1")
     current_workout.id
   end
 
   def self.find_workoutstretch_by_workout_id
-    WorkoutStretch.where("workout_id = ?", current_workout_id)
+    WorkoutStretch.where("workout_id = ?", self.id)
   end
 
   def self.run_current_workout

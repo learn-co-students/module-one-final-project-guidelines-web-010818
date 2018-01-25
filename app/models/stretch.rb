@@ -1,26 +1,34 @@
 class Stretch < ActiveRecord::Base
   has_many :stretch_muscle_groups
   has_many :muscle_groups, through: :stretch_muscle_groups
-
   has_many :workout_stretches
   has_many :workouts, through: :workout_stretches
   #mg = muscle_group
 
+  def self.find_stretches_by_mg_id(mg_id)
+    relationships = StretchMuscleGroup.where("muscle_group_id = ?", mg_id)
+    stretches_arr = []
+    relationships.each do |stretch_mg|
+      stretch = Stretch.find(stretch_mg.stretch_id)
+      stretches_arr << stretch
+    end
+    stretches_arr
+  end
 
+  def self.find_stretch_by_id(id)
+    Stretch.find(id)
+  end
 
-  def self.display_stretches(user_mg_id)
-    relationships = StretchMuscleGroup.where("muscle_group_id = ?", user_mg_id)
-    relationships.map do |instance_of_StretchMuscleGroup|
-      stretch = Stretch.find(instance_of_StretchMuscleGroup.stretch_id)
-        puts "#{stretch.id}. #{stretch.name}"
+  def self.display_stretches(stretches_arr)
+    stretches_arr.each do |stretch|
+      puts "#{stretch.id}. #{stretch.name}, favorited #{stretch.stars_count} times."
     end
   end
 
-
-  def self.find_and_add_stretch_to_workout(user_stretch_id)
-    user_stretch = Stretch.find(user_stretch_id)
-    new_workout = Workout.find_or_create_by(name: "#{@@current_user.name}'s workout")
-    WorkoutStretch.create(workout_id: new_workout.id, stretch_id: user_stretch_id)
+  def self.find_and_add_star_count_by_stretch_id(id)
+    stretch = Stretch.find(id)
+    stretch.stars_count += 1
+    stretch.save
   end
 
 end
