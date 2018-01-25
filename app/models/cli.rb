@@ -11,12 +11,43 @@ class Cli
 
 
   def welcome
-    current_session = Cli.new
+    puts "Hello!"
+    venue_or_event
   end
 
-  def venue_or_attraction
-    # search for venue or event?
-    # search for event by venue, attraction, or both?
+  def search_again?
+    input = get_input_from_user("Would you like to search again?",["Yes","No"])
+    case input
+    when "Yes"
+      venue_or_event
+    when "No"
+      exit
+    end
+  end
+
+  def venue_or_event
+    prompt = "Are you looking for a venue or an event?"
+    expected_results = ["Venue","Event", "Exit"]
+    input = get_input_from_user(prompt,expected_results)
+    case input
+    when "Venue"
+      search_for_venue
+    when "Event"
+      keyword_or_category
+    when "Exit"
+      exit
+    end
+  end
+
+  def keyword_or_category
+    prompt = "Would you like to search by keyword or browse by category?"
+    expected_results = ["Keyword","Category"]
+    search_input = get_input_from_user(prompt,expected_results)
+    if search_input == "Keyword"
+      search_for_events_by_attraction
+    elsif search_input == "Category"
+      search_for_attraction_by_genre
+    end
   end
 
   def search_for_venue
@@ -33,6 +64,7 @@ class Cli
     # search for attraction by keyword
     attraction_id = get_attraction_id_by_keyword
     find_events_for_attraction(attraction_id)
+    search_again?
   end
 
 
@@ -94,11 +126,13 @@ class Cli
     user_input = gets.chomp.downcase.split(/ |\_|\-/).map(&:capitalize).join(" ")
     if format_input == "upcase"
       user_input.upcase!
+    elsif format_input == "integer"
+      user_input = user_input.to_i
     end
     if expected_result_array == nil || expected_result_array.include?(user_input)
       user_input
     else
-      get_input_from_user("Input not recognized! Please try again: ")
+      get_input_from_user("Input not recognized! Please try again: ",expected_result_array,format_input)
     end
   end
 
@@ -200,7 +234,8 @@ class Cli
       i += 1
     end
     # gets number from user
-    response = self.get_input_from_user("Please select one of the above by number.")
+    range = (1..i).to_a
+    response = self.get_input_from_user("Please select one of the above by number.",range,"integer")
     index = response.to_i - 1 # get item index from selected number
      #return hash for selected data
   end
@@ -215,6 +250,7 @@ class Cli
       puts "Not found!"
       get_attraction_id_by_keyword
     else
+      puts "Here's what I found for that keyword: "
       selected_index = choose_by_number(parsed_results,"name")
       selected_attraction = parsed_results[selected_index]
       find_or_create_attraction(selected_attraction) #adds selected attraction to db
@@ -244,11 +280,11 @@ class Cli
         venue.state_code == state_code
       end
       venue_ids = collect_ids_from_array(venues_in_state)
-      
+
       found_events = Event.select do |event|
         newly_added.include?(event.id) && venue_ids.include?(event.venue_id)
       end
-
+      puts "Events in #{state_code}: "
       puts_events(found_events)
     end
   end
@@ -265,7 +301,7 @@ class Cli
         location_tracker << new_venue
       end
     end
-
+    puts "Here are the states with events for that attraction: "
     chosen_index = choose_by_number(location_tracker,"state_code")
     location_codes = location_tracker.map do |venue|
       venue["state_code"]
