@@ -39,52 +39,54 @@ class Cli
   end
 
   def player_menu
-    puts
-    puts "Welcome to #{current_game.neighborhood.name}"
-    puts
-    puts "What would you like to do?"
-    puts
-    puts "1. Interview Witnesses"
-    puts "2. Travel to Next Location"
-    puts "3. Look at your Evidence Book"
-    puts "4. End Game"
-    puts
-    response = gets.chomp
+    if !current_game.next_correct_neighborhood.nil?
+      puts
+      puts "Welcome to #{current_game.neighborhood.name}"
+      puts
+      puts "What would you like to do?"
+      puts
+      puts "1. Interview Witnesses"
+      puts "2. Travel to Next Location"
+      puts "3. Look at Evidence Book"
+      puts "4. End Game"
+      puts
+      response = gets.chomp
 
-    case response
-    when "1"
-      interview
-    when "2"
-      travel(get_travel_options)
-    when "3"
-      record_evidence
-    when "4"
-      exit
+      case response
+      when "1"
+        interview
+      when "2"
+        travel(get_travel_options)
+      when "3"
+        record_evidence
+      when "4"
+        exit
+      else
+        puts "Thats option is not valid"
+        player_menu
+      end
     else
-      puts "Thats option is not valid"
-      player_menu
+      ## Game Ending Sequence
+      puts "YOU'VE CAUGHT UP WITH THE SUSPECT!"
+      puts
+      puts "DON'T LET THEM GET AWAY!"
+      puts
+      issue_warrant
     end
   end
 
   def interview
-    if !current_game.next_correct_neighborhood.nil?
-      next_neighborhood = current_game.next_correct_neighborhood
-      #Need to access witnesses for stores in current neighborhood
-      store1 = current_game.neighborhood.stores[0]
-      store2 = current_game.neighborhood.stores[1]
-      store3 = current_game.neighborhood.stores[2]
-      #Need to access clues for *next* correct neighborhood
-      next_store1 = next_neighborhood.stores[0]
-      next_store2 = next_neighborhood.stores[1]
-      next_store3 = next_neighborhood.stores[2]
+    next_neighborhood = current_game.next_correct_neighborhood
+    #Need to access witnesses for stores in current neighborhood
+    store1 = current_game.neighborhood.stores[0]
+    store2 = current_game.neighborhood.stores[1]
+    store3 = current_game.neighborhood.stores[2]
+    #Need to access clues for *next* correct neighborhood
+    next_store1 = next_neighborhood.stores[0]
+    next_store2 = next_neighborhood.stores[1]
+    next_store3 = next_neighborhood.stores[2]
 
-      interview_menu(current_game.neighborhood.stores, next_neighborhood.stores)
-    else
-      puts
-      puts "You reached the end! The suspect is #{current_game.suspect}."
-      puts
-      exit
-    end
+    interview_menu(current_game.neighborhood.stores, next_neighborhood.stores)
   end
 
   def interview_menu(store, next_store)
@@ -136,6 +138,11 @@ class Cli
       if (current_index % 2 == 0) && ((store_index % 2) == 0)
         traits = Suspect.column_names
 
+        puts
+        puts "TESTING: current_game is #{current_game}"
+        puts "TESTING: suspect is #{current_game.suspect}"
+        puts "TESTING: traits is #{traits}"
+        puts
         ##pick random trait, ignoring id and name column
         trait_clue = traits[rand(2..(traits.size - 1))]
         trait_value = current_game.suspect[trait_clue]
@@ -211,7 +218,7 @@ class Cli
     when "4"
       time_clock(1)
       puts
-      puts "You are now in #{options[3]}.name!"
+      puts "You are now in #{options[3].name }!"
       puts
       puts "Hours Remaining: #{self.hours}"
       puts
@@ -406,7 +413,9 @@ class Cli
 
   def win
     puts
-    puts "Congrats! You've tracked down #{current_game.suspect.name} and solved the case. Great work Officer #{current_game.player.name}. But wait, we just recieved word of another burglary. New York City needs you, are you up to the challenge?"
+    puts "Congrats! You've tracked down #{current_game.suspect.name} and solved the case. Great work Officer #{current_game.player.name}. "
+      puts
+      puts "But wait, we just recieved word of another burglary. New York City needs you, are you up to the challenge?"
     play_again
   end
 
