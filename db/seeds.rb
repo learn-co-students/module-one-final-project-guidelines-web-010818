@@ -97,7 +97,7 @@ Suspect.find_or_create_by( name: "Carmen Sandiego",
   times_square = Neighborhood.find_or_create_by(name: "Times Square")
   chelsea = Neighborhood.find_or_create_by(name: "Chelsea")
   union_square = Neighborhood.find_or_create_by(name: "Union Square")
-  meatpacking = Neighborhood.find_or_create_by(name: "Meatpacking")
+  meatpacking = Neighborhood.find_or_create_by(name: "Meatpacking District")
   les = Neighborhood.find_or_create_by(name: "Lower East Side")
   soho = Neighborhood.find_or_create_by(name: "SoHo")
   uws = Neighborhood.find_or_create_by(name: "Upper West Side")

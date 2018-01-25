@@ -14,17 +14,17 @@ ActiveRecord::Schema.define(version: 20180123213307) do
 
   create_table "clues", force: :cascade do |t|
     t.integer "neighborhood_id"
-    t.string  "text"
+    t.string "text"
   end
 
   create_table "evidences", force: :cascade do |t|
     t.integer "game_id"
-    t.string  "suspect_name"
-    t.string  "gender"
-    t.string  "hair_color"
-    t.string  "eye_color"
-    t.string  "vehicle"
-    t.string  "favorite_food"
+    t.string "suspect_name"
+    t.string "gender"
+    t.string "hair_color"
+    t.string "eye_color"
+    t.string "vehicle"
+    t.string "favorite_food"
   end
 
   create_table "game_store_clues", force: :cascade do |t|
@@ -50,8 +50,8 @@ ActiveRecord::Schema.define(version: 20180123213307) do
 
   create_table "stores", force: :cascade do |t|
     t.integer "neighborhood_id"
-    t.string  "name"
-    t.string  "witness"
+    t.string "name"
+    t.string "witness"
   end
 
   create_table "suspects", force: :cascade do |t|
