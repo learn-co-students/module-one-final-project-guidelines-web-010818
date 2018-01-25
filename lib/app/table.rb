@@ -52,13 +52,41 @@ class Table
     end
   end
 
-  def display_yelp_reviews
-    yelp_reviews = self.get_yelp_reviews
-    yelp_reviews.each do |yelp_review|
-      puts "Name: #{yelp_review["name"]}"
-      puts "Rating: #{yelp_review["rating"]}"
-      puts "Date: #{yelp_review["date"]}"
-      puts "Text: #{yelp_review["text"]}"
+  def display_yelp_reviews(restaurant)
+    table(border: true) do
+     row header: true do
+       column('DATE', width: 10)
+       column('USER', width: 10)
+       column('RATING', width: 6)
+       column('CONTENT', width: 35)
+     end
+     restaurant.get_yelp_reviews.each_with_index do |review, index|
+       row do
+         column("#{review["time_created"]}")
+         column("#{review["name"]}")
+         column("#{review["rating"]}")
+         column("#{review["text"]}")
+       end
+     end
+    end
+  end
+
+  def display_mealpal_reviews(restaurant)
+    table(border: true) do
+     row header: true do
+       column('DATE', width: 10)
+       column('USER', width: 10)
+       column('RATING', width: 6, align: 'center')
+       column('CONTENT', width: 35)
+     end
+     restaurant.reviews.each_with_index do |review, index|
+       row do
+         column("#{review.date}")
+         column("#{review.user.name}")
+         column("#{review.rating}")
+         column("#{review.content}")
+       end
+     end
     end
   end
 

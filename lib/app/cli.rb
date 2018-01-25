@@ -121,8 +121,9 @@ class Cli < CliMethods
         input = gets.chomp.to_i
         restaurant = self.current_user.select_restaurant(restaurants, input)
         restaurant = Restaurant.find_or_create_by_instance(restaurant)
-        Table.new.display_yelp_reviews
-        Table.new.display_mealpal_reviews
+        binding.pry
+        Table.new.display_yelp_reviews(restaurant)
+        Table.new.display_mealpal_reviews(restaurant)
         # refactor to have method to add review
         puts "Enter 1 to return to main menu"
         input = gets.chomp.to_i

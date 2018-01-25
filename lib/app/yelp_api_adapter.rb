@@ -47,7 +47,7 @@ class YelpApiAdapter
       case k
       when "text"
         # binding.pry
-        parsed_hash[k] = v
+        parsed_hash[k] = v.gsub(/\n/," ")
       when "rating"
         parsed_hash[k] = v
       when "user"
