@@ -2,6 +2,7 @@ require_relative '../config/environment'
 require_relative '../db/seeds.rb'
 require 'pry'
 
-# game = Game.create
+c = Cli.new
+c.welcome
 
 Pry.start
