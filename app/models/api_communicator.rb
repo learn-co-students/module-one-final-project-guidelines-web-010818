@@ -53,6 +53,7 @@ class ApiCommunicator
 
   def self.get_events_by_attraction_id(attraction_id)
     url = "#{ROUTE}events.json?attractionId=#{attraction_id}#{API_KEY}"
+    
     #add check to see if there are any results
     self.iterate_through_pages(url, "events")
   end

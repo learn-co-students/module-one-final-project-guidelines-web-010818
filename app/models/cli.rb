@@ -22,9 +22,12 @@ class Cli
   def search_for_venue
     # Search for venue by location
     # get state and city, return list of venues
-    find_venues_by_city
+    get_events_from_venue
     # pick one and see upcoming events
+
   end
+
+
 
   def search_for_events_by_attraction
     # search for attraction by keyword
@@ -103,7 +106,7 @@ class Cli
     state = self.get_input_from_user("Enter a state code.", STATE_CODES, "upcase")
     city = self.get_input_from_user("Enter a city.")
     hash = ApiCommunicator.get_type_by_city("venues", state, city)
-    binding.pry
+
     if hash != []
       hash.each do |v|
         find_or_create_venue(v)
@@ -202,6 +205,8 @@ class Cli
      #return hash for selected data
   end
 
+
+
   def get_attraction_id_by_keyword
     #get attractions by keyword
     keyword = self.get_input_from_user("Enter a keyword to search for.")
@@ -239,10 +244,11 @@ class Cli
         venue.state_code == state_code
       end
       venue_ids = collect_ids_from_array(venues_in_state)
+      
       found_events = Event.select do |event|
-        event.attraction_id == attraction_id && venue_ids.include?(event.venue_id)
+        newly_added.include?(event.id) && venue_ids.include?(event.venue_id)
       end
-      binding.pry
+
       puts_events(found_events)
     end
   end
