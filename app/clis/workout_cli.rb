@@ -6,12 +6,24 @@ class WorkoutCli
   end
 
   def choose_mg_id
+    puts " "
     puts "Which muscle would you like to stretch?"
     MuscleGroup.display_all_mg
-    user_mg_id = gets.chomp.to_i
+    users_choice = nil
+    numbers = "123456789"
+    while users_choice == nil
+      user_mg_id = gets.chomp
+      if numbers.include?(user_mg_id)
+        users_choice = user_mg_id.to_i
+      else
+        puts "Which muscle would you like to stretch?"
+      end
+    end
+    users_choice
   end
 
   def choose_stretch_by_mg_id(mg_id)  #output stretch_id
+    puts " "
     puts "Which workout would you like to try?"
     relevant_stretches = Stretch.find_stretches_by_mg_id(mg_id)
     Stretch.display_stretches(relevant_stretches)
@@ -24,7 +36,9 @@ class WorkoutCli
   end
 
   def countdown
-    puts "Starting workout in"
+    puts " "
+    puts " "
+    puts "---------------------------------------STARTING WORK OUT------------------------------------------"
     puts "3..."
     sleep 2
     puts "2..."
@@ -32,24 +46,43 @@ class WorkoutCli
     puts "1..."
     sleep 2
     puts "go!"
+    sleep 2
+    puts " "
   end
 
   def run_current_session
-    self.current_workout.each do |stretch|
-      puts "#{stretch.name}"
-      puts "#{stretch.instructions}"
-      sleep 2
+      self.current_workout.each do |stretch|
+        puts “#{stretch.name}”
+        stretch.display_stretch_picture
+        puts “#{stretch.instructions}”
+        sleep stretch.time_in_sec
+      end
     end
+
+
+
+  def run_current_session
+    self.current_workout.each do |stretch|
+      puts "#{stretch.name.upcase}"
+      stretch.display_stretch_picture
+      puts "#{stretch.instructions}"
+      sleep 3
+      # sleep stretch.time_in_sec
+      puts "--------------------------------------------------------------------------------------------------"
+      puts " "
+    end
+    puts "-----END OF WORKOUT -----"
   end
 
   def star_favorite_stretch
+    sleep 1
+    puts " "
     puts "Which was your favorite stretch?"
     self.current_workout.each do |stretch|
       puts "#{stretch.id}. #{stretch.name}"
     end
     user_fav_stretch_id = gets.chomp.to_i
     Stretch.find_and_add_star_count_by_stretch_id(user_fav_stretch_id)
-    #save favorites to fav table
   end
 
   def self.run
@@ -62,25 +95,7 @@ class WorkoutCli
     current_session.countdown
     current_session.run_current_session
     current_session.star_favorite_stretch
+    Cli.choose_mind_or_body
   end
 
 end
-
-
-
-
-
-
-
-#workout.rb
-  #1) ask_body_part
-    #if body_part -> while input != start routine || time <= stretch length = 5
-                  #-> show relevant poses
-                  #-> select stretch(es)
-                  #-> save stretch to routine
-                  #-> time += stretch.time
-    #else -> fullbody
-
-  #2) launch routine
-  #3) ask for favorite pose(s)
-    # +=1 to star_count(s)
