@@ -19,18 +19,21 @@ class Stretch < ActiveRecord::Base
 
   def self.display_stretches(stretches_arr)
     stretches_arr.each do |stretch|
-      puts "#{stretch.id}. #{stretch.name}, favorited #{stretch.stars_count} times."
+      puts "#{stretch.id}. #{stretch.name}, favorited #{stretch.star_count} times."
     end
   end
 
   def self.find_and_add_star_count_by_stretch_id(id)
     stretch = Stretch.find(id)
-    stretch.stars_count += 1
+    stretch.star_count += 1
     stretch.save
   end
 
+  def display_stretch_picture
+    link = self.picture_link
+    Catpix::print_image("#{link}", :limit_x => 0.5, :limit_y => 0.5, :resolution => "high")
+  end
 end
-
 
 
 ####use for education component later
