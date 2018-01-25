@@ -67,7 +67,8 @@ class Restaurant < ActiveRecord::Base
     review_ratings = self.reviews.map do |review|
       review.rating
     end
-    review_ratings.compact.inject{ |sum, el| sum + el }.to_f / review_ratings.compact.size
+    average = review_ratings.compact.inject{ |sum, el| sum + el }.to_f / review_ratings.compact.size
+    average.round(1)
   end
 
   def self.top_10_yelp

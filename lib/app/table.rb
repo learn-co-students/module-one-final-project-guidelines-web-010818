@@ -51,6 +51,7 @@ class Table
   end
 
   def display_restaurants(array)
+    binding.pry
     table(border: true) do
      row header: true do
        column('NAME', width: 17)

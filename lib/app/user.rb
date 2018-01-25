@@ -83,7 +83,7 @@ class User < ActiveRecord::Base
 
   def search_yelp
     input = gets.chomp
-    YelpApiAdapter.user_search_and_display(input, self.location)
+    YelpApiAdapter.user_search(input, self.location)
   end
 
   def select_restaurant(restaurant_instance_array, input)
@@ -98,7 +98,7 @@ class User < ActiveRecord::Base
     input = gets.chomp.to_i
     meal = self.select_meal(restaurant, input)
     if meal
-      get_information_and_create_review_for_existing_meal(restaurant)
+      get_information_and_create_review_for_existing_meal(restaurant, meal)
     elsif input == restaurant.meals.size + 1
       get_information_and_create_review_for_new_meal(restaurant)
     else
@@ -107,17 +107,8 @@ class User < ActiveRecord::Base
     end
   end
 
-  def get_information_and_create_review_for_existing_meal(restaurant)
+  def get_information_and_create_review_for_existing_meal(restaurant, meal)
     rating = nil
-
-    #  until input.is_a?(Fixnum) do
-    #   print "Please enter a number: "
-    #   begin
-    #     input = Integer(gets)
-    #   rescue ArgumentError # calling Integer with a string argument raises this
-    #     input = nil        # explicitly reset input so the loop is re-entered
-    #   end
-    # end
     until rating.is_a?(Fixnum) && rating.between?(1, 5)
       puts "Please enter meal rating (1-2-3-4-5):"
       begin
@@ -135,11 +126,14 @@ class User < ActiveRecord::Base
   def get_information_and_create_review_for_new_meal(restaurant)
     puts "Please enter meal name:"
     meal_name = gets.chomp
-    rating = 0
-    until rating.between?(1, 5) && rating.class == Fixnum
-      binding.pry
+    rating = nil
+    until rating.is_a?(Fixnum) && rating.between?(1, 5)
       puts "Please enter meal rating (1-2-3-4-5):"
-      rating = gets.chomp.to_i
+      begin
+        rating = Integer(gets)
+      rescue ArgumentError
+        rating = nil
+      end
     end
     puts "Please enter review:"
     content = gets.chomp

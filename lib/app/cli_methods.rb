@@ -7,10 +7,6 @@ class CliMethods
     restaurant = Restaurant.find_or_create_by_instance(restaurant)
   end
 
-  def search_yelp
-
-  end
-
   def stats_menu_interface
     self.previous_menu = __method__
     Table.new.display_stats_menu
@@ -52,6 +48,15 @@ class CliMethods
     self.previous_menu = __method__
     puts "Please enter restaurant name:"
     restaurants = self.current_user.search_yelp
+    restaurants.map! do |restaurant|
+      found = Restaurant.find_by(yelp_id: restaurant.yelp_id)
+      if found
+        found
+      else
+        restaurant
+      end
+    end
+    Table.new.display_restaurants(restaurants)
     # User selects a restaurant from Yelp List. CLI displays existing restaurant meals
     # and the option to create a new meal. CLI gets user input to create a review for meal.
     if restaurants
@@ -75,7 +80,20 @@ class CliMethods
     restaurants = self.current_user.search_yelp
 
     if restaurants
+
+      restaurants.map! do |restaurant|
+        found = Restaurant.find_by(yelp_id: restaurant.yelp_id)
+        if found
+          found
+        else
+          restaurant
+        end
+      end
+
+      Table.new.display_restaurants(restaurants)
+
       puts "Please select restaurant (1-5):"
+
       restaurant = restaurant_selection_interface(restaurants)
 
       Table.new.display_yelp_reviews(restaurant)
