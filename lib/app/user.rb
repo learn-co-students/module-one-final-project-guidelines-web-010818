@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
   def self.login
     puts "Please enter your username: "
     username = gets.chomp.split(" ").map{|w| w.capitalize}.join(" ")
-    self.find_by(name: username)
+    self.find_by(name: username) || self.login
   end
 
   #User
@@ -59,7 +59,7 @@ class User < ActiveRecord::Base
         self.update(location: new_location)
       else
         puts "Incorrect input."
-        ask_location
+        ask_and_update_location
       end
     end
   end
@@ -81,12 +81,48 @@ class User < ActiveRecord::Base
     end
   end
 
+  def search_yelp
+    input = gets.chomp
+    YelpApiAdapter.user_search_and_display(input, self.location)
+  end
+
   def select_restaurant(restaurant_instance_array, input)
     restaurant_instance_array[input.to_i - 1]
   end
 
   def select_meal(restaurant_instance, input)
     restaurant_instance.meals[input.to_i - 1]
+  end
+
+  def select_or_create_meal(restaurant)
+    input = gets.chomp.to_i
+    meal = self.select_meal(restaurant, input)
+    if meal
+      get_information_and_create_review_for_existing_meal(restaurant)
+    elsif input == restaurant.meals.size + 1
+      get_information_and_create_review_for_new_meal(restaurant)
+    else
+      puts "Please try again"
+      select_or_create_meal(restaurant)
+    end
+  end
+
+  def get_information_and_create_review_for_existing_meal(restaurant)
+    puts "Please enter meal rating:"
+    rating = gets.chomp
+    puts "Please enter review:"
+    content = gets.chomp
+    self.add_review_for_existing_meal(meal: meal, rating: rating, content: content)
+  end
+
+  def get_information_and_create_review_for_new_meal(restaurant)
+    puts "Please enter meal name:"
+    meal_name = gets.chomp
+    puts "Please enter meal rating:"
+    rating = gets.chomp
+    puts "Please enter review:"
+    content = gets.chomp
+    self.add_review_for_new_meal(meal_name: meal_name, restaurant: restaurant, rating: rating, content: content)
   end
 
 
@@ -120,11 +156,6 @@ class User < ActiveRecord::Base
       mealpal_ratings.compact.inject{ |sum, el| sum + el }.to_f / mealpal_ratings.compact.size
   end
 
-  # def display_user_info
-  #   puts "Name: #{self.name}"
-  #   puts "Number of Reviews: #{self.number_of_reviews}"
-  #   puts "Average MealPal Rating: #{self.average_mealpal_rating}"
-  # end
 
   def self.most_active
     top_users = self.all.where("number_of_reviews > ?", 0).order(number_of_reviews: :desc).limit(3)

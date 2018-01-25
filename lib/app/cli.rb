@@ -1,28 +1,21 @@
 class Cli < CliMethods
-  attr_accessor :current_user
+  attr_accessor :current_user, :previous_menu
 
   def initialize
     @current_user = nil
     @previous_menu = nil
   end
 
-  # def run
-  #   welcome
-  #   ask_location
-  #   display_menu_options
-  # end
-
   def run
     puts "Welcome to the MealPal Rating App"
     puts " 1. New User \n 2. Returning User"
     self.current_user = User.create_user_or_login
     self.current_user.ask_and_update_location
-    binding.pry
-    # puts " 1. Yes, this is still my location \n 2. Update my location"
-    # update_location
+    main_menu_interface
+
   end
 
-  def display_menu_options
+  def main_menu_interface
 
     Table.new.display_main_menu
     input = gets.chomp.to_i
@@ -31,59 +24,42 @@ class Cli < CliMethods
     when 1
       Table.new.display_user_info(self.current_user)
       Table.new.display_user_reviews(self.current_user)
+      return_to_main_menu_interface
     when 2
       puts "Please enter restaurant name:"
-      input = gets.chomp
-
-      restaurants = YelpApiAdapter.user_search_and_display(input, self.current_user.location)
+      restaurants = self.current_user.search_yelp
+      # User selects a restaurant from Yelp List. CLI displays existing restaurant meals
+      # and the option to create a new meal. CLI gets user input to create a review for meal.
       if restaurants
         puts "Please select restaurant (1-5):"
-        input = gets.chomp.to_i
-        # select_restaurant_and_return_instance(restaurant, input)
-        restaurant = self.current_user.select_restaurant(restaurants, input)
-        restaurant = Restaurant.find_or_create_by_instance(restaurant)
+        restaurant = restaurant_selection_interface
+        puts "Meal options:"
         restaurant.display_meals
         puts "#{restaurant.meals.size + 1}. Create new meal"
-        input = gets.chomp.to_i
-        meal = self.current_user.select_meal(restaurant, input)
-        if meal
-          get_information_and_create_review_for_existing_meal(restaurant)
-          display_menu_options
-        elsif input == restaurant.meals.size + 1
-          get_information_and_create_review_for_new_meal(restaurant)
-          display_menu_options
-        else
-          puts "Please try again"
-          display_menu_options
-          #call method to start review process again here
-        end
+        puts "Enter a number to make your selection."
+        self.current_user.select_or_create_meal(restaurant)
+        return_to_main_menu_interface
       else
         puts "No results found. Please search again."
-        display_menu_options
+        return_to_main_menu_interface
       end
+
     when 3
       puts "Search Yelp: "
-      input = gets.chomp
-      restaurants = YelpApiAdapter.user_search_and_display(input, self.current_user.location)
+      restaurants = self.current_user.search_yelp
 
       if restaurants
         puts "Please select restaurant (1-5):"
-        input = gets.chomp.to_i
-        restaurant = self.current_user.select_restaurant(restaurants, input)
-        restaurant = Restaurant.find_or_create_by_instance(restaurant)
-        binding.pry
+        restaurant = restaurant_selection_interface
+
         Table.new.display_yelp_reviews(restaurant)
         Table.new.display_mealpal_reviews(restaurant)
         # refactor to have method to add review
-        puts "Enter 1 to return to main menu"
-        input = gets.chomp.to_i
-        if input == 1
-          display_menu_options
-        end
+        return_to_main_menu_interface
       else
         puts "Please try again"
-        display_menu_options
-        #call method to start review process again here
+        return_to_main_menu_interface
+
       end
 
     when 4
@@ -115,7 +91,7 @@ class Cli < CliMethods
 
     else
       "Enter a valid option (1-6)"
-      display_menu_options
+      return_to_main_menu_interface
     end
   end
 
