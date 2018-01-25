@@ -1,4 +1,4 @@
-class Cli
+class Cli < CliMethods
   attr_accessor :current_user
 
   def initialize
@@ -26,19 +26,19 @@ class Cli
       login
     else
       puts "Incorrect Input"
-      new_or_existing_user
+      create_user_or_login
     end
   end
 
   def login
     puts "Please enter your username: "
-    username = gets.chomp
+    username = gets.chomp.split(" ").each{|w| w.capitalize}.join(" ")
     self.current_user = User.find_by(name: username)
   end
 
   def create_user
     puts "Please enter a new username: "
-    username = gets.chomp
+    username = gets.chomp.split(" ").map{|w| w.capitalize}.join(" ")
     if User.find_by(name: username)
       puts "Username already taken."
       create_user
@@ -94,28 +94,22 @@ class Cli
       if restaurants
         puts "Please select restaurant (1-5):"
         input = gets.chomp.to_i
+        # select_restaurant_and_return_instance(restaurant, input)
         restaurant = self.current_user.select_restaurant(restaurants, input)
-        restaurant = Restaurant.find_or_create_by(restaurant.attributes.delete_if{|k,v| k == "id"})
+        restaurant = Restaurant.find_or_create_by_instance(restaurant)
         restaurant.display_meals
         puts "#{restaurant.meals.size + 1}. Create new meal"
         input = gets.chomp.to_i
         meal = self.current_user.select_meal(restaurant, input)
         if meal
-          puts "Please enter meal rating:"
-          rating = gets.chomp
-          puts "Please enter review:"
-          content = gets.chomp
-          self.current_user.add_review_for_existing_meal(meal: meal, rating: rating, content: content)
+          get_information_and_create_review_for_existing_meal(restaurant)
+          display_menu_options
         elsif input == restaurant.meals.size + 1
-          puts "Please enter meal name:"
-          meal_name = gets.chomp
-          puts "Please enter meal rating:"
-          rating = gets.chomp
-          puts "Please enter review:"
-          content = gets.chomp
-          self.current_user.add_review_for_new_meal(meal_name: meal_name, restaurant: restaurant, rating: rating, content: content)
+          get_information_and_create_review_for_new_meal(restaurant)
+          display_menu_options
         else
           puts "Please try again"
+          display_menu_options
           #call method to start review process again here
         end
       else
@@ -127,13 +121,14 @@ class Cli
       input = gets.chomp
       restaurants = YelpApiAdapter.user_search_and_display(input, self.current_user.location)
 
+      binding.pry
+
       if restaurants
         puts "Please select restaurant (1-5):"
         input = gets.chomp.to_i
         restaurant = self.current_user.select_restaurant(restaurants, input)
-        restaurant = Restaurant.find_or_create_by(restaurant.attributes.delete_if{|k,v| k == "id" || k == "mealpal_rating"})
+        restaurant = Restaurant.find_or_create_by_instance(restaurant)
         restaurant.display_yelp_reviews
-        binding.pry
         restaurant.display_mealpal_reviews
         # refactor to have method to add review
         puts "Enter 1 to return to main menu"
@@ -147,13 +142,17 @@ class Cli
         #call method to start review process again here
       end
 
+    when 4
 
-
-
+    when 5
 
 
     when 6
       exit
+
+    else
+      "Enter a valid option (1-6)"
+      display_menu_options
     end
   end
 

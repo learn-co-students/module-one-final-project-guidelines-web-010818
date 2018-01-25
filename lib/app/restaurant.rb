@@ -4,8 +4,6 @@ class Restaurant < ActiveRecord::Base
   has_many :favorites
   has_many :users, through: :favorites
 
-
-
   def display_restaurant_info
     puts " #{self.name}"
     puts "\tAddress: #{self.address}"
@@ -87,14 +85,13 @@ class Restaurant < ActiveRecord::Base
   end
 
   def self.find_or_create_by_instance(restaurant_instance)
-    found = Restaurant.find_by(restaurant_instance.yelp_id)
+    found = Restaurant.find_by(yelp_id: restaurant_instance.yelp_id)
     if found
       found
     else
       restaurant_instance.save
+      Restaurant.find_by(yelp_id: restaurant_instance.yelp_id)
     end
   end
-
-
 
 end

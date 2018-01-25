@@ -7,6 +7,8 @@ require "date"
 Bundler.require
 
 ActiveRecord::Base.establish_connection(adapter: 'sqlite3', database: 'db/development.db')
+# turn off ActiveRecord Debug Logger for application
+ActiveRecord::Base.logger = nil
 
 
 # Place holders for Yelp Fusion's API key. Grab it
