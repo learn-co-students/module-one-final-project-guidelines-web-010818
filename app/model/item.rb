@@ -11,7 +11,7 @@ class Item < ActiveRecord::Base
       Item.where("new = ?", false)
     elsif answer == "3"
       Item.all.each do |item|
-        puts "stock number: #{item.id}, #{item.name}, price: #{item.price}"
+        puts "stock number: #{item.id}, #{item.name}, price: $#{item.price}"
       end
     end
   end
@@ -27,7 +27,7 @@ class Item < ActiveRecord::Base
        new_or_used(answer).where("style = ?", "Vintage")
       elsif style == "4"
        new_or_used(answer).each do |item|
-        puts "stock number: #{item.id}, #{item.name}, price: #{item.price} style: #{item.style}\n"
+        puts "stock number: #{item.id}, #{item.name}, price: $#{item.price} style: #{item.style}\n".colorize(:white)
        end
      end
     end

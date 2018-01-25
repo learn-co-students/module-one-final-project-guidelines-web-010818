@@ -7,7 +7,7 @@ class CreateItems < ActiveRecord::Migration[4.2]
       t.string :style
       t.string :category
       t.string :size
-      t.integer :price
+      t.float :price
     end
   end
 end

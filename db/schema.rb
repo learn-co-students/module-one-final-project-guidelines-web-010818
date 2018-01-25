@@ -13,34 +13,35 @@
 ActiveRecord::Schema.define(version: 5) do
 
   create_table "companies", force: :cascade do |t|
-    t.string  "name"
-    t.integer "balance"
+    t.string "name"
+    t.float "balance"
   end
 
   create_table "items", force: :cascade do |t|
     t.boolean "new"
-    t.string  "name"
-    t.string  "style"
-    t.string  "category"
-    t.string  "size"
-    t.integer "price"
+    t.string "name"
+    t.string "style"
+    t.string "category"
+    t.string "size"
+    t.float "price"
   end
 
   create_table "marketplace_transactions", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "item_id"
+    t.integer "user_id"
+    t.integer "item_id"
     t.datetime "transaction_time"
   end
 
   create_table "store_transactions", force: :cascade do |t|
-    t.integer  "user_id"
-    t.integer  "item_id"
+    t.integer "user_id"
+    t.integer "item_id"
     t.datetime "transaction_time"
   end
 
   create_table "users", force: :cascade do |t|
-    t.string  "name"
-    t.integer "balance"
+    t.string "name"
+    t.float "balance"
+    t.string "wardrobe"
   end
 
 end

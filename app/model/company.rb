@@ -8,6 +8,10 @@ class Company < ActiveRecord::Base
     Item.create(name, style, category, size, price)
   end
 
+  def add_to_balance(amount)
+    balance += amount.to_f
+  end
+
 
 
 
