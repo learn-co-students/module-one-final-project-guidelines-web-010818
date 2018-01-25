@@ -80,7 +80,7 @@ class Cli
       interview_menu(current_game.neighborhood.stores, next_neighborhood.stores)
     else
       puts
-      puts "You reached the end!"
+      puts "You reached the end! The suspect is #{current_game.suspect}."
       puts
       exit
     end
