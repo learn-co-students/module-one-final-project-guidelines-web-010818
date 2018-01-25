@@ -1,15 +1,6 @@
 class Cli
   attr_accessor :current_user
 
-  STATE_CODES = [ "AK","AL","AR","AS","AZ", "CA","CO","CT","DC", "DE",
-                  "FL","GA","GU","HI","IA","ID","IL","IN","KS","KY",
-                  "LA","MA","MD","ME","MI","MN","MO","MS","MT","NC",
-                  "ND","NE","NH","NJ","NM","NV","NY","OH","OK","OR",
-                  "PA","PR","RI","SC","SD","TN","TX","UT","VA","VI",
-                  "VT","WA","WI","WV","WY"]
-
-
-
   def welcome
     puts "Hello!"
     venue_or_event
@@ -73,6 +64,7 @@ class Cli
     # Search by segment & genre OR keyword
     # return attractions
     # pick one and see upcoming events
+    find_genres_for_segment
   end
 
   def search_for_events
@@ -82,6 +74,7 @@ class Cli
     # return event list
     # pick one and get details
   end
+
 
 
 end

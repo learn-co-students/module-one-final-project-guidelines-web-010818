@@ -3,12 +3,21 @@
 
 ### Create class instances
 
+STATE_CODES = [ "AK","AL","AR","AS","AZ", "CA","CO","CT","DC", "DE",
+                "FL","GA","GU","HI","IA","ID","IL","IN","KS","KY",
+                "LA","MA","MD","ME","MI","MN","MO","MS","MT","NC",
+                "ND","NE","NH","NJ","NM","NV","NY","OH","OK","OR",
+                "PA","PR","RI","SC","SD","TN","TX","UT","VA","VI",
+                "VT","WA","WI","WV","WY"]
+
 def find_or_create_event(event_result_hash)
   new_event = Event.find_or_create_by(id:event_result_hash["id"]) do |event|
     event.name = event_result_hash['name']
     event.venue_id = event_result_hash['_embedded']['venues'][0]['id']
     event.attraction_id = event_result_hash['_embedded']['attractions'][0]['id']
-    event.dateTime = event_result_hash['dates']['start']['dateTime']
+    if event_result_hash['dates']['start']['dateTime']
+      event.dateTime = event_result_hash['dates']['start']['dateTime']
+    end
   end
   new_event
 end
@@ -49,8 +58,8 @@ def get_input_from_user(string, expected_result_array=nil,format_input=nil)
 end
 
 def find_venues_by_city
-  state = self.get_input_from_user("Enter a state code.", STATE_CODES, "upcase")
-  city = self.get_input_from_user("Enter a city.")
+  state = get_input_from_user("Enter a state code.", STATE_CODES, "upcase")
+  city = get_input_from_user("Enter a city.")
   hash = ApiCommunicator.get_type_by_city("venues", state, city)
 
   if hash != []
@@ -98,7 +107,7 @@ def get_attractions_from_segment(segment)
     i += 1
   end
 
-  response = self.get_input_from_user("Please select one of the above by number.")
+  response = get_input_from_user("Please select one of the above by number.")
 
   index = response.to_i - 1
   selected_genre = hash['segment']["_embedded"]["genres"][index]
@@ -106,7 +115,7 @@ def get_attractions_from_segment(segment)
   attractions = ApiCommunicator.get_attractions_by_genre_id(genre_id)
 
   attractions.each do |a|
-    self.find_or_create_attraction(a)
+    find_or_create_attraction(a)
   end
 
   attractions
@@ -114,8 +123,8 @@ end
 
 def filter_attractions_by_location(attractions_array)
 
-  state = self.get_input_from_user("Enter a state code.")
-  city = self.get_input_from_user("Enter a city.")
+  state = get_input_from_user("Enter a state code.")
+  city = get_input_from_user("Enter a city.")
   venue_hash = ApiCommunicator.get_type_by_city("venues", state, city)
   venue_hash.each do |v|
     new_venue = Venue.find_or_create_by(id:v['id']) do |venue|
@@ -133,34 +142,28 @@ def filter_attractions_by_location(attractions_array)
   #put only attractions with ids included in events filtered in previous
   newly_added_events = []
   new_attractions_array = attractions_array.select { |a| a['upcomingEvents']['_total'] > 0 }
+  new_attractions_array = new_attractions_array.slice(0..20)
   new_attractions_array.each do |a|
-  # events = []
-  # binding.pry
-  #   if !ApiCommunicator.get_events_by_attraction_id(a['id']).map { |e| e['_embedded']['attractions'][0]['id']}.include?(nil)
-  #     events << ApiCommunicator.get_events_by_attraction_id(a['id'])
-  #   end
-  # events.flatten!
-
-
   events = ApiCommunicator.get_events_by_attraction_id(a['id'])
-  events.each { |e| delete_if(e['_embedded']['attractions'][0]['id'] == nil) }
 
-    # binding.pry
-    # new_attractions_array.map { |a| a['event_id'] }.include?(nil)
-    # ApiCommunicator.get_events_by_attraction_id(a['id']).map { |e| e }.include?(nil)
 
-    events.each do |e|
-      new_event = find_or_create_event(e)
-      newly_added_events << new_event
+    if events != nil
+      events.each do |e|
+        new_event = find_or_create_event(e)
+        newly_added_events << new_event
+      end
     end
   end
 
-  events_at_location = newly_added_events.select do |e|
-    venue_hash.map { |v| v['id'] }.include?(e.venue_id)
+  events_at_location = []
+  venue_hash.each do |v|
+    if Event.find_by(venue_id: v['id'])
+      events_at_location << Event.find_by(venue_id: v['id'])
+    end
   end
 
   result = new_attractions_array.select do |a|
-    events_at_location.map { |e| e.attraction_id } == a['id']
+    events_at_location.map { |e| e['attraction_id'] }.include?(a['id'])
   end
 
   result.each { |r| puts "#{r['name']}" }
@@ -169,9 +172,9 @@ end
 def find_genres_for_segment
   puts "These are the available segments:"
   #segments to more "normal" term?
-  self.put_segment_options
-  segment = self.get_input_from_user("Enter a segment.")
-  attractions_array = self.get_attractions_from_segment(segment)
+  put_segment_options
+  segment = get_input_from_user("Enter a segment.")
+  attractions_array = get_attractions_from_segment(segment)
   filter_attractions_by_location(attractions_array)
 end
 
@@ -188,7 +191,7 @@ def choose_by_number(results,parameter) # takes hash of results and data type (a
   end
   # gets number from user
   range = (1..i).to_a
-  response = self.get_input_from_user("Please select one of the above by number.",range,"integer")
+  response = get_input_from_user("Please select one of the above by number.",range,"integer")
   index = response.to_i - 1 # get item index from selected number
    #return hash for selected data
 end
@@ -197,7 +200,7 @@ end
 
 def get_attraction_id_by_keyword
   #get attractions by keyword
-  keyword = self.get_input_from_user("Enter a keyword to search for.")
+  keyword = get_input_from_user("Enter a keyword to search for.")
   parsed_results = ApiCommunicator.get_attractions_by_keyword(keyword)
   if !parsed_results
     puts "Not found!"

@@ -1,6 +1,6 @@
 class ApiCommunicator
   ROUTE = "https://app.ticketmaster.com/discovery/v2/"
-  API_KEY = "&apikey=S5uxjG6W6tVeFpoilslVCFV1QIXTxkxr"
+  API_KEY = "&apikey=oRYEBxPGTbnqXlNBa48Moa1wMhR2FlJl"
 
   def self.get_and_parse(url)
 
@@ -16,10 +16,13 @@ class ApiCommunicator
     total_pages = json["page"]["totalPages"]
     current_page = 0
     results_array = []
-    while current_page < total_pages && current_page < 50
+    while current_page < total_pages && current_page < 10
       page_url = "#{url}&page=#{current_page}"
       page_results = self.get_and_parse(page_url)
-      results_array << page_results[type]
+
+      if page_results
+        results_array << page_results[type]
+      end
       current_page += 1
     end
     results_array.flatten!
@@ -53,9 +56,17 @@ class ApiCommunicator
 
   def self.get_events_by_attraction_id(attraction_id)
     url = "#{ROUTE}events.json?attractionId=#{attraction_id}#{API_KEY}"
-    
+
     #add check to see if there are any results
-    self.iterate_through_pages(url, "events")
+    response = HTTParty.get(url)
+    json = JSON.parse("#{response}")
+    # binding.pry
+    # json['_embedded']['events'] != nil
+
+    if json.keys.include?('_embedded')
+      self.iterate_through_pages(url, "events")
+    end
+    ########
   end
 
 
