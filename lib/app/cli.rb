@@ -135,7 +135,7 @@ class Cli < CliMethods
         display_menu_options
         #call method to start review process again here
       end
-
+      
     when 4
 
     when 5

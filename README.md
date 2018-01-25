@@ -49,3 +49,10 @@ The CLI is built around a SQLite database that is interacted with using the Sina
   * average_mealpal_rating
 
 The program itself is run through a Cli class that contains all of the code that interacts with the user. Any manipulation or searching of specific tables are handled by classes related to the tables above through ActiveRecord.
+
+## Contributing
+1. Fork it ( https://github.com/morgannegagne/module-one-final-project-guidelines-web-010818/fork )
+2. Create your feature branch (git checkout -b my-new-feature)
+3. Commit your changes (git commit -am 'Add some feature')
+4. Push to the branch (git push origin my-new-feature)
+5. Create new Pull Request

@@ -71,15 +71,15 @@ class Restaurant < ActiveRecord::Base
   end
 
   def self.top_10_yelp
-    restaurants_array = self.all.order(yelp_rating: :desc).limit(10)
-    restaurants_array.each_with_index do |restaurant, index|
-      print "#{index + 1}. "
-      restaurant.display_restaurant_info
-    end
+    restaurants_array = self.all.where("yelp_rating IS NOT NULL").order(yelp_rating: :desc).limit(10)
+    # restaurants_array.each_with_index do |restaurant, index|
+    #   print "#{index + 1}. "
+    #   restaurant.display_restaurant_info
+    # end
   end
 
   def self.top_10_mealpal
-    self.all.order(mealpal_rating: :desc).limit(10)
+    self.all.where("mealpal_rating IS NOT NULL").order(mealpal_rating: :desc).limit(10)
   end
 
   def self.find_or_create_by_instance(restaurant_instance)

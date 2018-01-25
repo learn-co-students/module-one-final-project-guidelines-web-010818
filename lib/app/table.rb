@@ -124,5 +124,52 @@ class Table
     end
   end
 
+  def display_top_10_yelp
+    table(border: true) do
+      row header: true do
+        column("Top 10 Yelp Restaurants by Ratings", width: 34)
+      end
+      array = Restaurant.top_10_yelp
+      array.each_with_index do |restaurant, index|
+        row do
+          column("#{index + 1}. #{restaurant.name} - #{restaurant.yelp_rating}")
+        end
+      end
+    end
+  end
+
+  def display_top_10_mealpal
+    table(border: true) do
+      row header: true do
+        column("Top 10 Mealpal Restaurants by Ratings", width: 37)
+      end
+      array = Restaurant.top_10_mealpal
+      array.each_with_index do |restaurant, index|
+        row do
+          column("#{index + 1}. #{restaurant.name} - #{restaurant.mealpal_rating}")
+        end
+      end
+    end
+  end
+
+  def display_user_stats(user_stats_method, table_title)
+    header title: table_title, align: 'center', width: table_title.size
+    table(border: true) do
+      row do
+        column("Name", width: 12, align: "left")
+        column("Reviews", width: 7, align: "center")
+        column("Average Rating", width: 7, align: "center")
+      end
+      array = user_stats_method
+      array.each_with_index do |user, index|
+        row do
+          column("#{index + 1}. #{user.name}")
+          column("#{user.number_of_reviews}")
+          column("#{user.average_mealpal_rating}")
+        end
+      end
+    end
+  end
+
 
 end
