@@ -227,8 +227,127 @@ class Cli
 
   def record_evidence
     puts
-    puts "Recording evidence...."
+    puts "Welcome to your evidence book"
     puts
-    player_menu
+    puts "What would you like to do?"
+    puts
+    puts "1. Record Evidence"
+    puts "2. See list of current suspects"
+    puts "3. Go back"
+
+    response = STDIN.gets.chomp
+
+    case response
+    when "1"
+      evidence_recorder
+    when "2"
+      current_list_of_suspects
+    when "3"
+      player_menu
+    else
+      puts
+      puts "That option is not valid"
+      record_evidence
+    end
   end
+
+  def evidence_recorder
+    puts
+    puts "Which evidence would you like to record?"
+    puts
+    puts "1. Gender"
+    puts "2. Hair Color"
+    puts "3. Eye Color"
+    puts "4. Vehicle"
+    puts "5. Favorite Food"
+    puts "6. Go back"
+    response = STDIN.gets.chomp
+
+    case response
+    when "1"
+      evidence_query("gender")
+    when "2"
+      evidence_query("hair_color")
+    when "3"
+      evidence_query("eye_color")
+    when "4"
+      evidence_query("vehicle")
+    when "5"
+      evidence_query("favorite_food")
+    when "6"
+      record_evidence
+    else
+      puts
+      puts "That option is not valid"
+      evidence_recorder
+    end
+  end
+
+  def evidence_query(trait)
+    puts
+    puts "What is the suspect's #{trait.gsub(/_/, " ")}?"
+    puts
+    trait_options = Suspect.all.map {|s| s[trait]}.uniq
+    trait_options.each_with_index {|t, i| puts "#{i + 1}. #{t.capitalize}"}
+    clue_response = STDIN.gets.chomp
+    guess = Evidence.find_or_create_by(game_id: current_game.id)
+    if clue_response.to_i.to_s == clue_response && clue_response.to_i <= trait_options.length
+      guess[trait] = trait_options[clue_response.to_i - 1]
+      guess.save
+      puts "Evidence Recorded"
+      evidence_recorder
+    else
+      puts
+      puts "That option is not valid"
+      evidence_recorder
+    end
+  end
+
+  def current_list_of_suspects
+    active_suspects = Suspect.all
+    game_suspect = Evidence.all.select {|s| s.game = current_game}
+    suspect_hash = game_suspect.last.attributes.select {|k,v| v != nil}
+    suspect_hash.delete("id")
+    suspect_hash.delete("game_id")
+    suspect_hash.each do |k,v|
+      Suspect.all.each do |s|
+        if s[k] != v
+          active_suspects.delete(s)
+        end
+      end
+    end
+    puts
+    puts "Here are the suspects that match your clues:"
+    puts
+    active_suspects.each_with_index {|s,i| puts "#{i + 1}. #{s.name}"}
+    henchmen_details(active_suspects)
+  end
+
+  def henchmen_details(henchmen_array)
+    puts
+    puts "Would you like see details about each possible suspect?"
+    puts
+    puts "1. Look at suspect details"
+    puts "2. Go back"
+    response = gets.chomp
+    case response
+    when "1"
+      puts
+      puts "Which suspect would you like?"
+      henchmen_array.each_with_index {|h,i| puts "#{i + 1}. #{h.name}"}
+      detail_response = gets.chomp
+      henchman = henchmen_array[detail_response.to_i - 1].attributes
+      puts
+      henchman.delete("id")
+      henchman.each {|k,v| puts "#{k}: #{v}"}
+      henchmen_details(henchmen_array)
+    when "2"
+      record_evidence
+    else
+      puts
+      puts "That option is not valid"
+      evidence_recorder
+    end
+  end
+
 end
