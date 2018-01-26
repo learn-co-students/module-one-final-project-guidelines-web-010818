@@ -1,10 +1,10 @@
 # NEED A BREAK? - A meditation and stretching app
 
-Are you ever feeling stressed out and just need a moment to take a break? This app can help! Simply decide if you would like some meditation time or stretching time.
+Are you ever feeling stressed out and just need a moment to quiet your mind or move your body? This app can help! Simply decide if you would like to to meditate or stretch.
 
-If you chose mediation, the app will ask you how long you would like to meditate. It then instructs your breathing with a CLI ASCII animation.
+If you chose a break for your mind, decide how long you would like to meditate. The app will provide a guided you through a short breathing exercise using a series of calming command line interaction (CLI) ASCII animation.
 
-If you chose workout, you are given the option to choose from different muscles to stretch and then various stretches relating to that muscle. The app will build a short workout based on your selections. The sequence will run, easing you into a more relaxed state.
+If you chose a break for your body, decided which muscles you would like to target and pick from the relevant stretches. The app will compile a short workout based on your preferences, and guide you through a series of movements using written instructions and picture references. 
 
 ## Install Instructions
 
@@ -20,7 +20,7 @@ If you chose workout, you are given the option to choose from different muscles 
 
 ## Functionality
 
-This is a command line application (CLI). It provides the following functions:
+This is a CLI application. It provides the following functions:
 * Users create a user name to save their favorite stretches
 * Users are offered a choice between meditation or workout
 * Meditation displays an animated ASCII scrolling animation to breathe along to
@@ -31,18 +31,18 @@ This is a command line application (CLI). It provides the following functions:
 ## Execution
 
 The CLI is built around a database using the Sinatra ActiveRecord gem. The database contains 5 tables:
-* favorites
-   * A join table between User and Stretches
-* muscle_groups
-   * A list of muscles to choose from
+* Favorites
+   * A joint table between Users and Stretches
+* Muscle_Groups
+   * A list of muscles groups
 * Stretch_Muscle_Groups
-   * A join table between Stretches and Muscle Groups
+   * A joint table between Stretches and Muscle_Groups
 * Stretches
    * A list of stretches, pictures, instructions, and a favorites count.
 * Users
   * A list of users
 
-The program is run through a Cli class (not using ActiveRecord) that contains the front-end code. All the code that interacts between classes/tables is stored within the models.
+The program is run through a CLI class (not using ActiveRecord) that contains the front-end code. All the code that interacts between classes/tables is stored within the models.
 
 ## Contributing
 1. Fork it (
