@@ -121,7 +121,7 @@ def put_segment_options
   end
 end
 
-def get_attractions_from_segment(segment)
+def get_genre_id_from_segment(segment)
   hash = ApiCommunicator.get_segments.select do |s|
     s['segment']['name'] == segment
   end.first
@@ -139,27 +139,33 @@ def get_attractions_from_segment(segment)
   index = response.to_i - 1
   selected_genre = hash['segment']["_embedded"]["genres"][index]
   genre_id = selected_genre["id"]
-  attractions = ApiCommunicator.get_attractions_by_genre_id(genre_id)
-
-  attractions.each do |a|
-    find_or_create_attraction(a)
-  end
-
-  attractions
+  # attractions = ApiCommunicator.get_attractions_by_genre_id(genre_id)
+  #
+  # attractions.each do |a|
+  #   find_or_create_attraction(a)
+  # end
+  #
+  # attractions
+  genre_id
 end
 
-def filter_attractions_by_location(attractions_array)
+def filter_attractions_by_location(genre_id)
 
   state = get_input_from_user("Enter a state code.")
   city = get_input_from_user("Enter a city.")
   venue_hash = ApiCommunicator.get_type_by_city("venues", state, city)
+  venue_id_array = []
   venue_hash.each do |v|
-    new_venue = Venue.find_or_create_by(id:v['id']) do |venue|
-      venue.name = v['name']
-      venue.city = v['city']['name']
-      venue.state_code = v['state']['stateCode']
-    end
+    find_or_create_venue(v)
+    venue_id_array << v['id']
   end
+
+  events_array = []
+  venue_id_array.each do |venue_id|
+    events_array << ApiCommunicator.get_events_by_venue_id_and_genre_id(venue_id, genre_id)
+  end
+  events_array.flatten!
+
 
   #pull events api
   #select those with attraction_id = to attraction
@@ -167,33 +173,37 @@ def filter_attractions_by_location(attractions_array)
 
   #filter through them to find ones with venue = any of venue hash above
   #put only attractions with ids included in events filtered in previous
-  newly_added_events = []
-  new_attractions_array = attractions_array.select { |a| a['upcomingEvents']['_total'] > 0 }
-  new_attractions_array = new_attractions_array.slice(0..20)
-  new_attractions_array.each do |a|
-  events = ApiCommunicator.get_events_by_attraction_id(a['id'])
+  # newly_added_events = []
+  # new_attractions_array = attractions_array.select { |a| a['upcomingEvents']['_total'] > 0 }
+  # new_attractions_array = new_attractions_array.slice(0..20)
+  # new_attractions_array.each do |a|
+  # events = ApiCommunicator.get_events_by_attraction_id(a['id'])
 
 
-    if events != nil
-      events.each do |e|
-        new_event = find_or_create_event(e)
-        newly_added_events << new_event
-      end
-    end
+  #   if events != nil
+  #     events.each do |e|
+  #       new_event = find_or_create_event(e)
+  #       newly_added_events << new_event
+  #     end
+  #   end
+  # end
+  #
+  # events_at_location = []
+  # venue_hash.each do |v|
+  #   if Event.find_by(venue_id: v['id'])
+  #     events_at_location << Event.find_by(venue_id: v['id'])
+  #   end
+  # end
+  #
+  # result = new_attractions_array.select do |a|
+  #   events_at_location.map { |e| e['attraction_id'] }.include?(a['id'])
+  # end
+  if events_array != []
+    puts_events(events_array)
+  else
+    puts "Not found!"
+    find_genres_for_segment
   end
-
-  events_at_location = []
-  venue_hash.each do |v|
-    if Event.find_by(venue_id: v['id'])
-      events_at_location << Event.find_by(venue_id: v['id'])
-    end
-  end
-
-  result = new_attractions_array.select do |a|
-    events_at_location.map { |e| e['attraction_id'] }.include?(a['id'])
-  end
-
-  result.each { |r| puts "#{r['name']}" }
 end
 
 def find_genres_for_segment
@@ -201,8 +211,8 @@ def find_genres_for_segment
   #segments to more "normal" term?
   put_segment_options
   segment = get_input_from_user("Enter a segment.")
-  attractions_array = get_attractions_from_segment(segment)
-  filter_attractions_by_location(attractions_array)
+  genre_id = get_genre_id_from_segment(segment)
+  filter_attractions_by_location(genre_id)
 end
 
 
@@ -293,14 +303,3 @@ def filter_events_by_location(event_id_array) #through venue
   chosen_state = location_codes.uniq[chosen_index]
   chosen_state #return state code
 end
-
-
-
-def find_attractions_for_genre
-  # gets segment then genre from user, returns like of attractions
-  find_genres_for_segment
-  response = get_input_from_user("")
-  #built genre retrieval in #puts genres by segment
-
-end
-#Matt
