@@ -1,0 +1,14 @@
+CLI PROJECT RETROSPECTIVE
+
+Difficult: triple join table
+
+3 Things Learned
+
+1. Triple join table
+2. Sketch out all relationships thoroughly before jumping into coding the classes
+3. Pair program the meat of the program so that when we split up tasks and went on our own we both had a good grasp of how everything interacted with each other. Reduced merge conflicts.
+
+Change or Add?
+
+	1. Wish we had more time to refactor. Cli is far too huge. Possibly a Printer class to handle all the menus.
+	2. More functionality that we left out such as ranks or loading saved games

@@ -18,6 +18,7 @@ class Cli
   def player_name_getter
     puts
     puts "Please enter your name:"
+    print "\n# "
     player_name = gets.chomp
   end
 
@@ -452,5 +453,4 @@ class Cli
       issue_warrant
     end
   end
-
 end
