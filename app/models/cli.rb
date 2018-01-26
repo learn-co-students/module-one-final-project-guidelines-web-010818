@@ -331,6 +331,7 @@ class Cli
     puts
     trait_options = Suspect.all.map {|s| s[trait]}.uniq
     trait_options.each_with_index {|t, i| puts "#{i + 1}. #{t.capitalize}".colorize(:green)}
+    print "\n# "
     clue_response = STDIN.gets.chomp
     guess = Evidence.find_or_create_by(game_id: current_game.id)
     if clue_response.to_i.to_s == clue_response && clue_response.to_i <= trait_options.length

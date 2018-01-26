@@ -1,49 +1,11 @@
-# Module One Final Project Guidelines
+Where in NYC is Carmen Sandiego?
 
-Congratulations, you're at the end of module one! You've worked crazy hard to get here and have learned a ton.
+Carmen Sandiego and her gang of henchmen are terrorizing the streets of New York City. Nothing is safe. It’s up to you, a rookie on the force, to bring her and her gang to justice.
 
-For your final project, we'll be building a Command Line database application.
+This is a CLI game built using Ruby. To play please download all files in the repository. Navigate to the directory and type “ruby bin/run.rb”. The game will load and you will be on your way. Are you up to the challenge?
 
-## Project Requirements
+After entering your name the journey begins. The game starts at the scene of the crime. Interview witnesses to get clues about where your suspect might be headed to next. Personal clues about the suspect can be added to your evidence book. As you add clues to the evidence book the list of suspects will shrink. Make sure to act fast as you only have 12 hours before the perp gets away. If you don’t catch the crook before the day is over you will need to make your best guess as to who is guilty.
 
-### Option One - Data Analytics Project
+Each game follows a different path through the city, has different clues, and a different suspect. No two games will be the same.
 
-1. Access a Sqlite3 Database using ActiveRecord.
-2. You should have at minimum three models including one join model. This means you must have a many-to-many relationship.
-3. You should seed your database using data that you collect either from a CSV, a website by scraping, or an API.
-4. Your models should have methods that answer interesting questions about the data. For example, if you've collected info about movie reviews, what is the most popular movie? What movie has the most reviews?
-5. You should provide a CLI to display the return values of your interesting methods.  
-6. Use good OO design patterns. You should have separate classes for your models and CLI interface.
-
-### Option Two - Command Line CRUD App
-
-1. Access a Sqlite3 Database using ActiveRecord.
-2. You should have a minimum of three models.
-3. You should build out a CLI to give your user full CRUD ability for at least one of your resources. For example, build out a command line To-Do list. A user should be able to create a new to-do, see all todos, update a todo item, and delete a todo. Todos can be grouped into categories, so that a to-do has many categories and categories have many to-dos.
-4. Use good OO design patterns. You should have separate models for your runner and CLI interface.
-
-### Brainstorming and Proposing a Project Idea
-
-Projects need to be approved prior to launching into them, so take some time to brainstorm project options that will fulfill the requirements above.  You must have a minimum of four [user stories](https://en.wikipedia.org/wiki/User_story) to help explain how a user will interact with your app.  A user story should follow the general structure of `"As a <role>, I want <goal/desire> so that <benefit>"`. In example, if we were creating an app to randomly choose nearby restaurants on Yelp, we might write:
-
-* As a user, I want to be able to enter my name to retrieve my records
-* As a user, I want to enter a location and be given a random nearby restaurant suggestion
-* As a user, I should be able to reject a suggestion and not see that restaurant suggestion again
-* As a user, I want to be able to save to and retrieve a list of favorite restaurant suggestions
-
-## Instructions
-
-1. Fork and clone this repository.
-2. Build your application. Make sure to commit early and commit often. Commit messages should be meaningful (clearly describe what you're doing in the commit) and accurate (there should be nothing in the commit that doesn't match the description in the commit message). Good rule of thumb is to commit every 3-7 mins of actual coding time. Most of your commits should have under 15 lines of code and a 2 line commit is perfectly acceptable.
-3. Make sure to create a good README.md with a short description, install instructions, a contributors guide and a link to the license for your code.
-4. Make sure your project checks off each of the above requirements.
-5. Prepare a video demo (narration helps!) describing how a user would interact with your working project.
-    * The video should:
-      - Have an overview of your project.(2 minutes max)
-6. Prepare a presentation to follow your video.(3 minutes max)
-    * Your presentation should:
-      - Describe something you struggled to build, and show us how you ultimately implemented it in your code.
-      - Discuss 3 things you learned in the process of working on this project.
-      - Address, if anything, what you would change or add to what you have today?
-      - Present any code you would like to highlight.   
-7. *OPTIONAL, BUT RECOMMENDED*: Write a blog post about the project and process.
+This program was written by Cristy Lucke and Torre Johnson. Any similarities to Where in the World is Carmen Sandiego is purely accidental and in no way related to her global capers.
