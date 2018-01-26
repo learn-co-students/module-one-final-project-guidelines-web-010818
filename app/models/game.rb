@@ -45,7 +45,7 @@ class Game < ActiveRecord::Base
 
   def pick_suspect
     #random number and grab index from suspect array
-    random_index = rand(0..15)
+    random_index = rand(0..Suspect.all.size)
     self.suspect = Suspect.all[random_index]
   end
 

@@ -5,7 +5,7 @@ class Cli
 
   def welcome
     puts
-    puts "Welcome to Where in NYC is Carmen Sandiego!"
+    puts "Welcome to Where in NYC is Carmen Sandiego!".colorize(:color => :white, :background => :blue)
     p1 = find_or_create_player(player_name_getter)
     new_game = Game.create()
     self.current_game = new_game
@@ -31,9 +31,9 @@ class Cli
 
   def start_game
     puts
-    puts "A horrible crime has occurred!!"
-    puts "The suspect was seen leaving the bank and it's your job to track them down!"
-    puts "You will have 12 hours to apprehend the criminal."
+    puts "A horrible crime has occurred!!".colorize(:red)
+    puts "The suspect was seen leaving the bank and it's your job to track them down!".colorize(:red)
+    puts "You will have 12 hours to apprehend the criminal.".colorize(:red)
     puts
     player_menu
   end
@@ -41,15 +41,15 @@ class Cli
   def player_menu
     if !current_game.next_correct_neighborhood.nil?
       puts
-      puts "Welcome to #{current_game.neighborhood.name}"
+      puts "Welcome to #{current_game.neighborhood.name}!".colorize(:green)
       puts
-      puts "What would you like to do?"
+      puts "What would you like to do?".colorize(:blue)
       puts
-      puts "1. Interview Witnesses"
-      puts "2. Travel to Next Location"
-      puts "3. Look at Evidence Book"
-      puts "4. End Game"
-      puts
+      puts "1. Interview Witnesses".colorize(:magenta)
+      puts "2. Travel to Next Location".colorize(:yellow)
+      puts "3. Look at Evidence Book".colorize(:green)
+      puts "4. End Game".colorize(:red)
+      print "\n# "
       response = gets.chomp
 
       case response
@@ -62,14 +62,14 @@ class Cli
       when "4"
         exit
       else
-        puts "Thats option is not valid"
+        puts "That option is not valid".colorize(:red)
         player_menu
       end
     else
       ## Game Ending Sequence
-      puts "YOU'VE CAUGHT UP WITH THE SUSPECT!"
+      puts "YOU'VE CAUGHT UP WITH THE SUSPECT!".colorize(:color => :white, :background => :green)
       puts
-      puts "DON'T LET THEM GET AWAY!"
+      puts "DON'T LET THEM GET AWAY!".colorize(:color => :white, :background => :blue)
       puts
       issue_warrant
     end
@@ -91,14 +91,13 @@ class Cli
 
   def interview_menu(store, next_store)
     puts
-    puts "Which place would you like to visit?"
+    puts "Which place would you like to visit?".colorize(:blue)
     puts
-    puts "1. #{store[0].name}"
-    puts "2. #{store[1].name}"
-    puts "3. #{store[2].name}"
-    puts "4. Go Back"
-    puts
-
+    puts "1. #{store[0].name}".colorize(:magenta)
+    puts "2. #{store[1].name}".colorize(:yellow)
+    puts "3. #{store[2].name}".colorize(:cyan)
+    puts "4. Go Back".colorize(:green)
+    print "\n# "
     response = gets.chomp
 
     case response
@@ -138,11 +137,6 @@ class Cli
       if (current_index % 2 == 0) && ((store_index % 2) == 0)
         traits = Suspect.column_names
 
-        puts
-        puts "TESTING: current_game is #{current_game}"
-        puts "TESTING: suspect is #{current_game.suspect}"
-        puts "TESTING: traits is #{traits}"
-        puts
         ##pick random trait, ignoring id and name column
         trait_clue = traits[rand(2..(traits.size - 1))]
         trait_value = current_game.suspect[trait_clue]
@@ -159,14 +153,14 @@ class Cli
 
   def travel(options)
     puts
-    puts "Where would you like to go?"
+    puts "Where would you like to go?".colorize(:magenta)
     puts
     if options.size > 1 ## Meaning, you're on the right track!
       options.each_with_index do |t, index|
-        puts "#{index + 1}. #{t.name}"
+        puts "#{index + 1}. #{t.name}".colorize(:blue)
       end
-      puts "#{options.size + 1}. Go Back"
-      puts
+      puts "#{options.size + 1}. Go Back".colorize(:green)
+      print "\n# "
       response = gets.chomp
     else ## Meaning, you went the wrong way and need to go back
       puts "Hit any key to back to #{options[0].name}"
@@ -179,7 +173,7 @@ class Cli
     when "1"
       time_clock(1)
       puts
-      puts "You are now in #{options[0].name}!"
+      puts "You are now in #{options[0].name}!".colorize(:color => :white, :background => :green)
       puts
       puts "Hours Remaining: #{self.hours}"
       puts
@@ -274,14 +268,14 @@ class Cli
 
   def record_evidence
     puts
-    puts "Welcome to your evidence book"
+    puts "Welcome to your evidence book".colorize(:blue)
     puts
     puts "What would you like to do?"
     puts
-    puts "1. Record Evidence"
-    puts "2. See list of current suspects"
-    puts "3. Go back"
-
+    puts "1. Record Evidence".colorize(:magenta)
+    puts "2. See list of current suspects".colorize(:yellow)
+    puts "3. Go back".colorize(:green)
+    print "\n# "
     response = STDIN.gets.chomp
 
     case response
@@ -293,21 +287,22 @@ class Cli
       player_menu
     else
       puts
-      puts "That option is not valid"
+      puts "That option is not valid".colorize(:red)
       record_evidence
     end
   end
 
   def evidence_recorder
     puts
-    puts "Which evidence would you like to record?"
+    puts "Which evidence would you like to record?".colorize(:blue)
     puts
-    puts "1. Gender"
-    puts "2. Hair Color"
-    puts "3. Eye Color"
-    puts "4. Vehicle"
-    puts "5. Favorite Food"
-    puts "6. Go back"
+    puts "1. Gender".colorize(:cyan)
+    puts "2. Hair Color".colorize(:yellow)
+    puts "3. Eye Color".colorize(:green)
+    puts "4. Vehicle".colorize(:magenta)
+    puts "5. Favorite Food".colorize(:blue)
+    puts "6. Go back".colorize(:red)
+    print "\n# "
     response = STDIN.gets.chomp
 
     case response
@@ -325,27 +320,27 @@ class Cli
       record_evidence
     else
       puts
-      puts "That option is not valid"
+      puts "That option is not valid".colorize(:red)
       evidence_recorder
     end
   end
 
   def evidence_query(trait)
     puts
-    puts "What is the suspect's #{trait.gsub(/_/, " ")}?"
+    puts "What is the suspect's #{trait.gsub(/_/, " ")}?".colorize(:blue)
     puts
     trait_options = Suspect.all.map {|s| s[trait]}.uniq
-    trait_options.each_with_index {|t, i| puts "#{i + 1}. #{t.capitalize}"}
+    trait_options.each_with_index {|t, i| puts "#{i + 1}. #{t.capitalize}".colorize(:green)}
     clue_response = STDIN.gets.chomp
     guess = Evidence.find_or_create_by(game_id: current_game.id)
     if clue_response.to_i.to_s == clue_response && clue_response.to_i <= trait_options.length
       guess[trait] = trait_options[clue_response.to_i - 1]
       guess.save
-      puts "Evidence Recorded"
+      puts "Evidence Recorded".colorize(:red)
       evidence_recorder
     else
       puts
-      puts "That option is not valid"
+      puts "That option is not valid".colorize(:red)
       evidence_recorder
     end
   end
@@ -353,7 +348,6 @@ class Cli
   def current_list_of_suspects
     active_suspects = []
     Suspect.all.each {|s| active_suspects << s}
-    binding.pry
     evidence = Evidence.find_or_create_by(game_id: current_game.id)
     suspect_hash = evidence.attributes.select {|k,v| v != nil}
     suspect_hash.delete("id")
@@ -374,37 +368,40 @@ class Cli
 
   def henchmen_details(henchmen_array)
     puts
-    puts "Would you like see details about each possible suspect?"
+    puts "Would you like see details about each possible suspect?".colorize(:blue)
     puts
-    puts "1. Look at suspect details"
-    puts "2. Go back"
+    puts "1. Look at suspect details".colorize(:magenta)
+    puts "2. Go back".colorize(:green)
+    print "\n# "
     response = gets.chomp
     case response
     when "1"
       puts
-      puts "Which suspect would you like?"
+      puts "Which suspect would you like?".colorize(:blue)
       henchmen_array.each_with_index {|h,i| puts "#{i + 1}. #{h.name}"}
+      print "\n# "
       detail_response = gets.chomp
       henchman = henchmen_array[detail_response.to_i - 1].attributes
       puts
       henchman.delete("id")
-      henchman.each {|k,v| puts "#{k}: #{v}"}
+      henchman.each {|k,v| puts "#{k}: #{v}".colorize(:green)}
       henchmen_details(henchmen_array)
     when "2"
       record_evidence
     else
       puts
-      puts "That option is not valid"
+      puts "That option is not valid".colorize(:red)
       evidence_recorder
     end
   end
 
   def issue_warrant
     puts
-    puts "You should have enough intel to issue a warrant."
+    puts "You should have enough intel to issue a warrant.".colorize(:blue)
     current_list_of_suspects
     puts
-    puts "Which suspect would you like to arrest?"
+    puts "Which suspect would you like to arrest?".colorize(:green)
+    print "\n# "
     response = gets.chomp
     if current_list_of_suspects[response.to_i - 1] == current_game.suspect
       win
@@ -415,31 +412,32 @@ class Cli
 
   def win
     puts
-    puts "Congrats! You've tracked down #{current_game.suspect.name} and solved the case. Great work Officer #{current_game.player.name}. "
+    puts "Congrats! You've tracked down #{current_game.suspect.name} and solved the case. Great work Officer #{current_game.player.name}.".colorize(:green)
       puts
-      puts "But wait, we just recieved word of another burglary. New York City needs you, are you up to the challenge?"
+      puts "But wait, we just recieved word of another burglary. New York City needs you, are you up to the challenge?".colorize(:red)
     play_again
   end
 
   def lose_by_suspect(suspect)
     puts
-    puts "You arrested the wrong person! #{suspect.name} has a solid alibi and now we'll never solve the crime. Would you like to try to redeem yourself with a new case?"
+    puts "You arrested the wrong person! #{suspect.name} has a solid alibi and now we'll never solve the crime. Would you like to try to redeem yourself with a new case?".colorize(:red)
     play_again
   end
 
   def play_again
     puts
-    puts "Would you like to play again?"
+    puts "Would you like to play again?".colorize(:green)
     puts
-    puts "1. I'm on the case!"
-    puts "2. I'm off duty."
+    puts "1. I'm on the case!".colorize(:blue)
+    puts "2. I'm off duty.".colorize(:red)
+    print "\n# "
     response = gets.chomp
     case response
     when "1"
       welcome
     else
       puts
-      puts "See you later!"
+      puts "See you later!".colorize(:blue)
       puts
       exit
     end
@@ -449,7 +447,7 @@ class Cli
     self.hours -= time
     if self.hours <= 0.0
       puts
-      puts "You've run out of time!"
+      puts "You've run out of time!".colorize(:color => :white, :background => :red)
       issue_warrant
     end
   end
