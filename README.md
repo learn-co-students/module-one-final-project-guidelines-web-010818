@@ -1,49 +1,58 @@
-# Module One Final Project Guidelines
+# MealPal Meal Rating with Yelp
 
-Congratulations, you're at the end of module one! You've worked crazy hard to get here and have learned a ton.
+Our project idea sprang from the fact that there is no good way to rate and share experiences with MealPal restaurants. We thought it would be cool if a user could use the Yelp Fusion API to get information about restaurants they may want to try and then, if that restaurant is on MealPal, to create their own review about their experience. MealPal and regular dining experiences can be vastly different at the same restaurant, so comparing these reviews could be useful.
 
-For your final project, we'll be building a Command Line database application.
+## Install Instructions
 
-## Project Requirements
+1. Clone repository from GitHub
+2. Open terminal
+3. Navigate to the repository directory
+4. Enter ruby bin/run.rb to execute an instance of the application
+  * Prepend bundle exec to your run command if the program fails to run
 
-### Option One - Data Analytics Project
+## Functionality
 
-1. Access a Sqlite3 Database using ActiveRecord.
-2. You should have at minimum three models including one join model. This means you must have a many-to-many relationship.
-3. You should seed your database using data that you collect either from a CSV, a website by scraping, or an API.
-4. Your models should have methods that answer interesting questions about the data. For example, if you've collected info about movie reviews, what is the most popular movie? What movie has the most reviews?
-5. You should provide a CLI to display the return values of your interesting methods.  
-6. Use good OO design patterns. You should have separate classes for your models and CLI interface.
+This is a command line application (CLI) provides the following functionality:
+* Users can create a username to persist their data
+* Reviews can be creating MealPal meals by finding the restaurant through the Yelp API and associating the meal with the restaurant
+* The functionality of the Yelp search can be used to find restaurants by category, name, and location
+* Once a restaurant is found, users can view reviews
+* Users can view statistics about their own activity, as well as the activity of other users
+* Searches can be performed against MealPal reviews
 
-### Option Two - Command Line CRUD App
+## Execution
 
-1. Access a Sqlite3 Database using ActiveRecord.
-2. You should have a minimum of three models.
-3. You should build out a CLI to give your user full CRUD ability for at least one of your resources. For example, build out a command line To-Do list. A user should be able to create a new to-do, see all todos, update a todo item, and delete a todo. Todos can be grouped into categories, so that a to-do has many categories and categories have many to-dos.
-4. Use good OO design patterns. You should have separate models for your runner and CLI interface.
+The CLI is built around a SQLite database that is interacted with using the Sinatra ActiveRecord gem. The database contains 4 tables:
+* restaurants - information is only stored once a user creates a review
+  * name
+  * address
+  * phone_number
+  * yelp_rating
+  * latitude
+  * longitude
+  * yelp_review_count
+  * yelp_id
+  * category
+  * mealpal_rating
+* meals - associated to restaurants and reviews
+  * name
+  * restaurant_id
+* reviews - associated to meals and users
+  * user_id
+  * meal_id
+  * rating
+  * content
+* users - information is stored when username is created
+  * username
+  * location
+  * number_of_reviews
+  * average_mealpal_rating
 
-### Brainstorming and Proposing a Project Idea
+The program itself is run through a Cli class that contains all of the code that interacts with the user. Any manipulation or searching of specific tables are handled by classes related to the tables above through ActiveRecord.
 
-Projects need to be approved prior to launching into them, so take some time to brainstorm project options that will fulfill the requirements above.  You must have a minimum of four [user stories](https://en.wikipedia.org/wiki/User_story) to help explain how a user will interact with your app.  A user story should follow the general structure of `"As a <role>, I want <goal/desire> so that <benefit>"`. In example, if we were creating an app to randomly choose nearby restaurants on Yelp, we might write:
-
-* As a user, I want to be able to enter my name to retrieve my records
-* As a user, I want to enter a location and be given a random nearby restaurant suggestion
-* As a user, I should be able to reject a suggestion and not see that restaurant suggestion again
-* As a user, I want to be able to save to and retrieve a list of favorite restaurant suggestions
-
-## Instructions
-
-1. Fork and clone this repository.
-2. Build your application. Make sure to commit early and commit often. Commit messages should be meaningful (clearly describe what you're doing in the commit) and accurate (there should be nothing in the commit that doesn't match the description in the commit message). Good rule of thumb is to commit every 3-7 mins of actual coding time. Most of your commits should have under 15 lines of code and a 2 line commit is perfectly acceptable.
-3. Make sure to create a good README.md with a short description, install instructions, a contributors guide and a link to the license for your code.
-4. Make sure your project checks off each of the above requirements.
-5. Prepare a video demo (narration helps!) describing how a user would interact with your working project.
-    * The video should:
-      - Have an overview of your project.(2 minutes max)
-6. Prepare a presentation to follow your video.(3 minutes max)
-    * Your presentation should:
-      - Describe something you struggled to build, and show us how you ultimately implemented it in your code.
-      - Discuss 3 things you learned in the process of working on this project.
-      - Address, if anything, what you would change or add to what you have today?
-      - Present any code you would like to highlight.   
-7. *OPTIONAL, BUT RECOMMENDED*: Write a blog post about the project and process.
+## Contributing
+1. Fork it ( https://github.com/morgannegagne/module-one-final-project-guidelines-web-010818/fork )
+2. Create your feature branch (git checkout -b my-new-feature)
+3. Commit your changes (git commit -am 'Add some feature')
+4. Push to the branch (git push origin my-new-feature)
+5. Create new Pull Request
