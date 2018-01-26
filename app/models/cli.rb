@@ -17,15 +17,21 @@ class Cli
   end
 
   def venue_or_event
-    prompt = "Are you looking for a venue or an event?"
-    expected_results = ["Venue","Event", "Exit"]
-    input = get_input_from_user(prompt,expected_results)
+    puts "Search upcoming events by: "
+    options = ["Venue","Atrraction","Exit"]
+    i = 1
+    options.each do |option|
+      puts "#{i}. #{option}"
+      i += 1
+    end
+
+    input = get_input_from_user("Choose by number",["1","2","3"])
     case input
-    when "Venue"
+    when "1"
       search_for_venue
-    when "Event"
+    when "2"
       keyword_or_category
-    when "Exit"
+    when "3"
       exit
     end
   end
@@ -73,13 +79,6 @@ class Cli
     find_genres_for_segment
   end
 
-  def search_for_events
-    # search by venue or attraction
-    # option to refine results by date
-    # option to refine by location
-    # return event list
-    # pick one and get details
-  end
 
 
 

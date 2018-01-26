@@ -99,23 +99,29 @@ def limit_to_twenty(event_rows)
     puts "Too many events! Returning first 20."
     event_rows
   end
+  event_rows
 end
 
 def puts_events(event_rows)
   event_rows = limit_to_twenty(event_rows)
+
   event_rows.each do |event_row|
+
     name = event_row['name']
-    if event_row['venue_id']
-      venue = Venue.find_by(id:event_row['venue_id'])
+    venue = Venue.find_by(id:event_row['venue_id'])
+    if !venue
+      venue_name = "Unknown"
+    else
+      venue_name = venue.name
     end
     if event_row['dateTime']
       date = event_row['dateTime']
-    end
-    if !event_row['venue_id'] && !event_row['dateTime']
-      puts "#{name}"
     else
-      puts "#{name} - #{venue.name} - #{date}"
+      date = "Unknown"
     end
+
+    puts "#{name} - #{venue_name} - #{date}"
+
   end
 end
 
@@ -148,13 +154,7 @@ def get_genre_id_from_segment(segment)
   index = response.to_i - 1
   selected_genre = hash['segment']["_embedded"]["genres"][index]
   genre_id = selected_genre["id"]
-  # attractions = ApiCommunicator.get_attractions_by_genre_id(genre_id)
-  #
-  # attractions.each do |a|
-  #   find_or_create_attraction(a)
-  # end
-  #
-  # attractions
+
   genre_id
 end
 
@@ -175,40 +175,15 @@ def filter_attractions_by_location(genre_id)
   end
   events_array.flatten!
 
-  #pull events api
-  #select those with attraction_id = to attraction
-  #save them
+  events_array.delete_if { |e| e == nil }
+  if events_array != [] && events_array
+    event_instances = []
+    events_array.each do |event|
+      new_event = find_or_create_event(event)
+      event_instances << new_event
+    end
 
-  #filter through them to find ones with venue = any of venue hash above
-  #put only attractions with ids included in events filtered in previous
-  # newly_added_events = []
-  # new_attractions_array = attractions_array.select { |a| a['upcomingEvents']['_total'] > 0 }
-  # new_attractions_array = new_attractions_array.slice(0..20)
-  # new_attractions_array.each do |a|
-  # events = ApiCommunicator.get_events_by_attraction_id(a['id'])
-
-
-  #   if events != nil
-  #     events.each do |e|
-  #       new_event = find_or_create_event(e)
-  #       newly_added_events << new_event
-  #     end
-  #   end
-  # end
-  #
-  # events_at_location = []
-  # venue_hash.each do |v|
-  #   if Event.find_by(venue_id: v['id'])
-  #     events_at_location << Event.find_by(venue_id: v['id'])
-  #   end
-  # end
-  #
-  # result = new_attractions_array.select do |a|
-  #   events_at_location.map { |e| e['attraction_id'] }.include?(a['id'])
-  # end
-  if events_array != []
-    events_array.delete_if { |e| e == nil }
-    puts_events(events_array)
+  puts_events(event_instances)
   else
     puts "Not found!"
     find_genres_for_segment
