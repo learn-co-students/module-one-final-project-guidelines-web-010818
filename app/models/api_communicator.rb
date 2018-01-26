@@ -1,6 +1,7 @@
 class ApiCommunicator
   ROUTE = "https://app.ticketmaster.com/discovery/v2/"
-  API_KEY = "&apikey=oRYEBxPGTbnqXlNBa48Moa1wMhR2FlJl"
+  API_KEY = "&apikey=S5uxjG6W6tVeFpoilslVCFV1QIXTxkxr"
+  # API_KEY = "&apikey=oRYEBxPGTbnqXlNBa48Moa1wMhR2FlJl"
 
   def self.get_and_parse(url)
 
@@ -30,14 +31,15 @@ class ApiCommunicator
 
   def self.get_type_by_state(type, state)
     url = "#{ROUTE}#{type}.json?stateCode=#{state}#{API_KEY}"
-    self.get_and_parse(url)
+    # self.get_and_parse(url)
+    self.iterate_through_pages(url,type)
   end
 
   def self.get_type_by_city(type, state, city)
     results_for_state = get_type_by_state(type,state)
-
-    results_for_state["venues"].select do |venue_hash|
+    results_for_state.select do |venue_hash|
       venue_hash["city"]["name"] == city
+
     end
   end
 

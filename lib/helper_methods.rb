@@ -97,16 +97,25 @@ def limit_to_twenty(event_rows)
   if event_rows.size > 20
     event_rows = event_rows.slice(0..19)
     puts "Too many events! Returning first 20."
+    event_rows
   end
 end
 
 def puts_events(event_rows)
   event_rows = limit_to_twenty(event_rows)
   event_rows.each do |event_row|
-    name = event_row.name
-    venue = Venue.find_by(id:event_row.venue_id)
-    date = event_row.dateTime
-    puts "#{name} - #{venue.name} - #{date}"
+    name = event_row['name']
+    if event_row['venue_id']
+      venue = Venue.find_by(id:event_row['venue_id'])
+    end
+    if event_row['dateTime']
+      date = event_row['dateTime']
+    end
+    if !event_row['venue_id'] && !event_row['dateTime']
+      puts "#{name}"
+    else
+      puts "#{name} - #{venue.name} - #{date}"
+    end
   end
 end
 
@@ -166,7 +175,6 @@ def filter_attractions_by_location(genre_id)
   end
   events_array.flatten!
 
-
   #pull events api
   #select those with attraction_id = to attraction
   #save them
@@ -199,6 +207,7 @@ def filter_attractions_by_location(genre_id)
   #   events_at_location.map { |e| e['attraction_id'] }.include?(a['id'])
   # end
   if events_array != []
+    events_array.delete_if { |e| e == nil }
     puts_events(events_array)
   else
     puts "Not found!"
