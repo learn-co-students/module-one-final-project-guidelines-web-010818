@@ -1,7 +1,7 @@
 class ApiCommunicator
   ROUTE = "https://app.ticketmaster.com/discovery/v2/"
-  API_KEY = "&apikey=S5uxjG6W6tVeFpoilslVCFV1QIXTxkxr"
-  # API_KEY = "&apikey=oRYEBxPGTbnqXlNBa48Moa1wMhR2FlJl"
+  # API_KEY = "&apikey=S5uxjG6W6tVeFpoilslVCFV1QIXTxkxr"
+  API_KEY = "&apikey=oRYEBxPGTbnqXlNBa48Moa1wMhR2FlJl"
 
   def self.get_and_parse(url)
 
