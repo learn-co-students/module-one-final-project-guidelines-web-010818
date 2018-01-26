@@ -76,6 +76,7 @@ class Table
   end
 
   def display_yelp_reviews(restaurant)
+    header title: "Yelp Reviews"
     table(border: true) do
      row header: true do
        column('DATE', width: 10)
@@ -95,6 +96,7 @@ class Table
   end
 
   def display_mealpal_reviews(restaurant)
+    header title: "MealPal Reviews"
     table(border: true) do
      row header: true do
        column('DATE', width: 10)
