@@ -14,8 +14,6 @@ ActiveRecord::Base.logger = nil
 
 # Place holders for Yelp Fusion's API key. Grab it
 # from https://www.yelp.com/developers/v3/manage_app
-API_KEY = '4EBJY8ivWTcB1SRXIXZ1hQXqE14y4HqOYwpGTo1zgly-_oTa9wNahyobVvj3hM2Rv-3_vmMWon_QTun3WMSVZ4BQKkvz804kjC3eh51pKiIpWqEZQuhIn-TENVVmWnYx'
-
 
 # Constants, do not change these
 API_HOST = "https://api.yelp.com"
