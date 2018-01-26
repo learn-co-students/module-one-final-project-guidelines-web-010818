@@ -241,7 +241,7 @@ end
 
 def create_and_save_events_from_array(array)
   newly_added = []
-  events.each do |e|
+  array.each do |e|
     new_event = find_or_create_event(e)
     newly_added << new_event.id
   end

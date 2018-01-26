@@ -14,6 +14,7 @@ class ApiCommunicator
   def self.iterate_through_pages(url,type)
     response = HTTParty.get(url)
     json = JSON.parse("#{response}")
+    total_pages = 1
     total_pages = json["page"]["totalPages"]
     current_page = 0
     results_array = []

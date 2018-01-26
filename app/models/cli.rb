@@ -25,7 +25,7 @@ class Cli
       i += 1
     end
 
-    input = get_input_from_user("Choose by number",["1","2","3"])
+    input = get_input_from_user("",["1","2","3"])
     case input
     when "1"
       search_for_venue
@@ -37,15 +37,21 @@ class Cli
   end
 
   def keyword_or_category
-    prompt = "Would you like to search by keyword or browse by category?"
-    expected_results = ["Keyword","Category","Exit"]
-    search_input = get_input_from_user(prompt,expected_results)
+    puts "Search by: "
+    expected_results = ["1","2","3"]
+    options = ["keyword", "category","exit"]
+    i = 1
+    options.each do |option|
+      puts "#{i}. #{option}"
+      i += 1
+    end
+    search_input = get_input_from_user("",expected_results)
     case search_input
-    when "Keyword"
+    when "1"
       search_for_events_by_attraction
-    when "Category"
+    when "2"
       search_for_attraction_by_genre
-    when "Exit"
+    when "3"
       exit
     end
   end
