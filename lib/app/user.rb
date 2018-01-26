@@ -168,23 +168,21 @@ class User < ActiveRecord::Base
       mealpal_ratings = self.reviews.map do |review|
         review.rating
       end
-      mealpal_ratings.compact.inject{ |sum, el| sum + el }.to_f / mealpal_ratings.compact.size
+      average = mealpal_ratings.compact.inject{ |sum, el| sum + el }.to_f / mealpal_ratings.compact.size
+      average.round(1)
   end
 
 
   def self.most_active
     top_users = self.all.where("number_of_reviews > ?", 0).order(number_of_reviews: :desc).limit(3)
-    # top_users.each{|user| user.display_user_info}
   end
 
   def self.most_critical
     critical_users = self.all.where("number_of_reviews > ?", 0).order(average_mealpal_rating: :asc).limit(3)
-    # critical_users.each{|user| user.display_user_info}
   end
 
   def self.least_critical
     nice_users = self.all.where("number_of_reviews > ?", 0).order(average_mealpal_rating: :desc).limit(3)
-    # nice_users.each{|user| user.display_user_info}
   end
 
 
