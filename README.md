@@ -4,7 +4,7 @@ Are you ever feeling stressed out and just need a moment to quiet your mind or m
 
 If you chose a break for your mind, decide how long you would like to meditate. The app will guided you through a short breathing exercise using a series of calming command line interactions (CLI), ASCII animation.
 
-If you chose a break for your body, decid which muscles you would like to target and pick from the relevant stretches. The app will compile a short workout based on your preferences, and guide you through a series of movements using written instructions and picture references. 
+If you chose a break for your body, decide which muscles you would like to target and pick from the relevant stretches. The app will compile a short workout based on your preferences, and guide you through a series of movements using written instructions and picture references. 
 
 ## Install Instructions
 
