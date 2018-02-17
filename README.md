@@ -31,16 +31,11 @@ This is a CLI application. It provides the following functions:
 ## Execution
 
 The CLI is built around a database using the Sinatra ActiveRecord gem. The database contains 5 tables:
-* favorites
-   * A joint table between Users and Stretches
-* muscle_groups
-   * A list of muscles groups
-* stretch_muscle_groups
-   * A joint table between Stretches and Muscle_Groups
-* stretches
-   * A list of stretches, pictures, instructions, and a favorites count.
-* users
-  * A list of users
+* favorites - a joint table between Users and Stretches
+* muscle_groups - a list of muscles groups
+* stretch_muscle_groups - a joint table between Stretches and Muscle_Groups
+* stretches - a list of stretches, pictures, instructions, and a favorites count.
+* users - a list of users
 
 The program is run through a CLI class (not using ActiveRecord) that contains the front-end code. All the code that interacts between classes/tables is stored within the models.
 
